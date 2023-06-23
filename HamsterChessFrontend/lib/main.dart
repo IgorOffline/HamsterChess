@@ -103,7 +103,6 @@ class Board {
   int size = 8;
   double widthHeight = 441;
   List<BoardSquare> squares = [];
-  bool squareColorFlag = true;
 
   Board() {
     for (var j = 0; j < size; j++) {
@@ -191,9 +190,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         ) {
       return Container(
           decoration: BoxDecoration(
-              color: _colorFlag(index, board)
-                  ? Color(0xFFF0D9B5)
-                  : Color(0xFFB58863),
+              color: _color(index, board),
               border: Border.all(color: Colors.black, width: 0.5)),
           child: Draggable<BoardSquare>(
               data: board.squares.elementAt(index),
@@ -207,17 +204,24 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   height: 100.0,
                   width: 100.0,
                   color: Colors.transparent,
-                  child: Icon(Icons.directions_run)),
+                  child: Icon(Icons.account_balance)),
               child: _gridTile(index, board)));
     }));
   }
 
-  bool _colorFlag(int index, Board board) {
-    board.squareColorFlag = !board.squareColorFlag;
-    if (index % 8 == 0) {
-      board.squareColorFlag = !board.squareColorFlag;
+  Color _color(int index, Board board) {
+    var squareColorFlag = false;
+    for (var i = 0; i < board.size * board.size; i++) {
+      if (i % board.size == 0) {
+        squareColorFlag = !squareColorFlag;
+      }
+      if (i == index) {
+        return squareColorFlag ? Color(0xFFF0D9B5) : Color(0xFFB58863);
+      }
+      squareColorFlag = !squareColorFlag;
     }
-    return board.squareColorFlag;
+
+    throw IndexError(index, board.size * board.size);
   }
 
   Widget _gridTile(int index, Board board) {
@@ -247,4 +251,5 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     });
     debugPrint('_minus ${board.widthHeight}');
   }
+
 }
