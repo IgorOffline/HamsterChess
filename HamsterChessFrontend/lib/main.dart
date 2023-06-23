@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
 
@@ -97,6 +99,11 @@ class BoardSquare {
   PieceColor pieceColor;
 
   BoardSquare(this.letter, this.number, this.piece, this.pieceColor);
+
+  @override
+  String toString() {
+    return '$piece$pieceColor-$letter$number';
+  }
 }
 
 class Board {
@@ -135,6 +142,18 @@ class Board {
   }
 }
 
+class BoardMovement {
+  BoardSquare from;
+  BoardSquare to;
+
+  BoardMovement(this.from, this.to);
+
+  @override
+  String toString() {
+    return '$from, $to';
+  }
+}
+
 class MyStatefulWidget extends StatefulWidget {
   const MyStatefulWidget({super.key});
 
@@ -152,48 +171,50 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Container(
-                width: board.widthHeight,
-                height: board.widthHeight,
-                margin:
+          Container(
+            width: board.widthHeight,
+            height: board.widthHeight,
+            margin:
                 const EdgeInsets.only(left: 10, top: 10, right: 0, bottom: 0),
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black, width: 2.0)),
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: board.size,
-                  ),
-                  itemBuilder: (context, index) =>
-                      _itemBuilder(context, index, board),
-                  itemCount: board.size * board.size,
-                  physics: const NeverScrollableScrollPhysics(),
-                ),
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.black, width: 2.0)),
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: board.size,
               ),
-              Row(children: <Widget>[
-                FloatingActionButton(
-                    onPressed: () => _plus(board),
-                    tooltip: '+',
-                    child: const Icon(Icons.add)),
-                FloatingActionButton(
-                    onPressed: () => _minus(board),
-                    tooltip: '-',
-                    child: const Icon(Icons.remove)),
-              ])
-            ]));
+              itemBuilder: (context, index) =>
+                  _itemBuilder(context, index, board),
+              itemCount: board.size * board.size,
+              physics: const NeverScrollableScrollPhysics(),
+            ),
+          ),
+          Row(children: <Widget>[
+            FloatingActionButton(
+                onPressed: () => _plus(board),
+                tooltip: '+',
+                child: const Icon(Icons.add)),
+            FloatingActionButton(
+                onPressed: () => _minus(board),
+                tooltip: '-',
+                child: const Icon(Icons.remove)),
+          ])
+        ]));
   }
 
   Widget _itemBuilder(BuildContext context, int index, Board board) {
-    return GridTile(child: DragTarget<BoardSquare>(builder: (
-        BuildContext context,
-        List<dynamic> accepted,
-        List<dynamic> rejected,
-        ) {
+    return GridTile(
+        child: DragTarget<BoardMovement>(builder: (
+      BuildContext context,
+      List<dynamic> accepted,
+      List<dynamic> rejected,
+    ) {
       return Container(
           decoration: BoxDecoration(
               color: _color(index, board),
               border: Border.all(color: Colors.black, width: 0.5)),
-          child: Draggable<BoardSquare>(
-              data: board.squares.elementAt(index),
+          child: Draggable<BoardMovement>(
+              data: BoardMovement(
+                  board.squares.elementAt(index), board.squares.elementAt(0)),
               feedback: Container(
                 color: Colors.transparent,
                 height: 100,
@@ -206,6 +227,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   color: Colors.transparent,
                   child: Icon(Icons.account_balance)),
               child: _gridTile(index, board)));
+    }, onAccept: (data) {
+      log('data: $data');
     }));
   }
 
@@ -251,5 +274,4 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     });
     debugPrint('_minus ${board.widthHeight}');
   }
-
 }
