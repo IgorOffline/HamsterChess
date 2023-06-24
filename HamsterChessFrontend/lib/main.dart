@@ -107,10 +107,23 @@ class BoardSquare {
   }
 }
 
+class BoardMovement {
+  BoardSquare from;
+  BoardSquare to;
+
+  BoardMovement(this.from, this.to);
+
+  @override
+  String toString() {
+    return '$from, $to';
+  }
+}
+
 class Board {
   int size = 8;
   double widthHeight = 441;
   List<BoardSquare> squares = [];
+  GlobalKey key1 = GlobalKey();
 
   Board() {
     for (var j = 0; j < size; j++) {
@@ -141,17 +154,19 @@ class Board {
 
     throw UnimplementedError('Square piece unknown');
   }
-}
 
-class BoardMovement {
-  BoardSquare from;
-  BoardSquare to;
+  String calculateDragAndDropTargetSquare() {
+    final RenderBox renderBox =
+        key1.currentContext?.findRenderObject() as RenderBox;
+    final Offset renderBoxOffset = renderBox.localToGlobal(Offset.zero);
+    final Size renderBoxSize = renderBox.size;
 
-  BoardMovement(this.from, this.to);
+    final double squareSize = renderBoxSize.width / size;
+    final double squareSizeHalf = squareSize / 2;
 
-  @override
-  String toString() {
-    return '$from, $to';
+    print('AppBar().preferredSize.height: ${AppBar().preferredSize.height}');
+
+    return '';
   }
 }
 
@@ -173,6 +188,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
           Container(
+            key: board.key1,
             width: board.widthHeight,
             height: board.widthHeight,
             margin:
@@ -198,6 +214,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 onPressed: () => _minus(board),
                 tooltip: '-',
                 child: const Icon(Icons.remove)),
+            FloatingActionButton(
+                onPressed: () => _info(board),
+                tooltip: 'info',
+                child: const Text('info')),
           ])
         ]));
   }
@@ -229,11 +249,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               child: _gridTile(index, board)));
     }, onWillAccept: (int? data) {
       if (data != null) {
-        log('onWillAccept: $data');
+        //log('onWillAccept: $data');
       }
       return true;
-    }, onAcceptWithDetails: (DragTargetDetails<int?> data) {
-      log('onAcceptWithDetails: ${data.data}, ${data.offset}');
     }));
   }
 
@@ -278,5 +296,22 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       board.widthHeight -= 11;
     });
     debugPrint('_minus ${board.widthHeight}');
+  }
+
+  void _info(Board board) {
+    debugPrint('_info ${board.key1}');
+
+    final RenderBox renderBox =
+        board.key1.currentContext?.findRenderObject() as RenderBox;
+
+    final Size size = renderBox.size; // or _widgetKey.currentContext?.size
+    print('Size: ${size.width}, ${size.height}');
+
+    final Offset offset = renderBox.localToGlobal(Offset.zero);
+    print('Offset: ${offset.dx}, ${offset.dy}');
+    print(
+        'Position: ${(offset.dx + size.width) / 2}, ${(offset.dy + size.height) / 2}');
+
+    board.calculateDragAndDropTargetSquare();
   }
 }
