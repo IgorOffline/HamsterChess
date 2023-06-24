@@ -107,25 +107,26 @@ class BoardSquare {
 class Board {
   int size = 8;
   double widthHeight = 441;
-  List<BoardSquare> squares = [];
-  final Map<int, BoardSquare> indexBoardSquare = {};
+  final Map<int, BoardSquare> indexSquare = {};
 
   Board() {
     for (var j = 0; j < size; j++) {
       for (var i = 0; i < size; i++) {
         final letter = BoardLetter.values.elementAt(i);
         final number = BoardNumber.values.reversed.elementAt(j);
-        if (letter == BoardLetter.e && number == BoardNumber.n3) {
-          squares
-              .add(BoardSquare(letter, number, Piece.king, PieceColor.white));
-        } else {
-          squares.add(BoardSquare(letter, number, Piece.none, PieceColor.none));
-        }
         final key = (j * size) + i;
-        final value = BoardSquare(letter, number, Piece.none, PieceColor.none);
-        indexBoardSquare[key] = value;
+        final value = _initSquare(letter, number);
+        indexSquare[key] = value;
       }
     }
+  }
+
+  BoardSquare _initSquare(BoardLetter letter, BoardNumber number) {
+    if (letter == BoardLetter.e && number == BoardNumber.n3) {
+      return BoardSquare(letter, number, Piece.king, PieceColor.white);
+    }
+
+    return BoardSquare(letter, number, Piece.none, PieceColor.none);
   }
 
   Widget getWidgetForSquare(BoardSquare square) {
@@ -244,7 +245,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   }
 
   Widget _gridTile(int index, Board board) {
-    final square = board.squares.elementAt(index);
+    final square = board.indexSquare[index]!;
     if (square.piece == Piece.none) {
       return Column(children: <Widget>[
         Text('${square.letter}${square.number}', textScaleFactor: 0.75),
@@ -272,6 +273,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   }
 
   void _info(Board board) {
-    print('_info: indexBoardSquare (${board.indexBoardSquare.length}): ${board.indexBoardSquare}');
+    print(
+        '_info: indexBoardSquare (${board.indexSquare.length}): ${board.indexSquare}');
   }
 }
