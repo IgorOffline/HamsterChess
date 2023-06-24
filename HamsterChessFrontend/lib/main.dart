@@ -147,6 +147,13 @@ class MyStatefulWidget extends StatefulWidget {
   State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
 }
 
+class DragTargetLetterNumber extends DragTarget<Object> {
+  final int index2;
+
+  DragTargetLetterNumber(
+      {required this.index2, required super.builder, super.onWillAccept});
+}
+
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Board board = Board();
 
@@ -193,35 +200,38 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   Widget _itemBuilder(BuildContext context, int index, Board board) {
     return GridTile(
-        child: DragTarget<int>(builder: (
-      BuildContext context,
-      List<dynamic> accepted,
-      List<dynamic> rejected,
-    ) {
-      return Container(
-          decoration: BoxDecoration(
-              color: _color(index, board),
-              border: Border.all(color: Colors.black, width: 0.5)),
-          child: Draggable<int>(
-              data: index,
-              feedback: Container(
-                color: Colors.transparent,
-                height: 100,
-                width: 100,
-                child: Icon(Icons.directions_run),
-              ),
-              childWhenDragging: Container(
-                  height: 100.0,
-                  width: 100.0,
-                  color: Colors.transparent,
-                  child: Icon(Icons.account_balance)),
-              child: _gridTile(index, board)));
-    }, onWillAccept: (int? data) {
-      if (data != null) {
-        //log('onWillAccept: $data');
-      }
-      return true;
-    }));
+        child: DragTargetLetterNumber(
+            index2: index,
+            builder: (
+              BuildContext context,
+              List<dynamic> accepted,
+              List<dynamic> rejected,
+            ) {
+              return Container(
+                  decoration: BoxDecoration(
+                      color: _color(index, board),
+                      border: Border.all(color: Colors.black, width: 0.5)),
+                  child: Draggable<Object>(
+                      data: index,
+                      feedback: Container(
+                        color: Colors.transparent,
+                        height: 100,
+                        width: 100,
+                        child: Icon(Icons.directions_run),
+                      ),
+                      childWhenDragging: Container(
+                          height: 100.0,
+                          width: 100.0,
+                          color: Colors.transparent,
+                          child: Icon(Icons.account_balance)),
+                      child: _gridTile(index, board)));
+            },
+            onWillAccept: (Object? data) {
+              if (data != null) {
+                print('onWillAccept ($index): ${data as int}');
+              }
+              return true;
+            }));
   }
 
   Color _color(int index, Board board) {
