@@ -1,6 +1,3 @@
-import 'dart:developer';
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
 
@@ -107,23 +104,10 @@ class BoardSquare {
   }
 }
 
-class BoardMovement {
-  BoardSquare from;
-  BoardSquare to;
-
-  BoardMovement(this.from, this.to);
-
-  @override
-  String toString() {
-    return '$from, $to';
-  }
-}
-
 class Board {
   int size = 8;
   double widthHeight = 441;
   List<BoardSquare> squares = [];
-  GlobalKey key1 = GlobalKey();
 
   Board() {
     for (var j = 0; j < size; j++) {
@@ -154,20 +138,6 @@ class Board {
 
     throw UnimplementedError('Square piece unknown');
   }
-
-  String calculateDragAndDropTargetSquare() {
-    final RenderBox renderBox =
-        key1.currentContext?.findRenderObject() as RenderBox;
-    final Offset renderBoxOffset = renderBox.localToGlobal(Offset.zero);
-    final Size renderBoxSize = renderBox.size;
-
-    final double squareSize = renderBoxSize.width / size;
-    final double squareSizeHalf = squareSize / 2;
-
-    print('AppBar().preferredSize.height: ${AppBar().preferredSize.height}');
-
-    return '';
-  }
 }
 
 class MyStatefulWidget extends StatefulWidget {
@@ -188,7 +158,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
           Container(
-            key: board.key1,
             width: board.widthHeight,
             height: board.widthHeight,
             margin:
@@ -288,30 +257,17 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     setState(() {
       board.widthHeight += 11;
     });
-    debugPrint('_plus ${board.widthHeight}');
+    print('_plus ${board.widthHeight}');
   }
 
   void _minus(Board board) {
     setState(() {
       board.widthHeight -= 11;
     });
-    debugPrint('_minus ${board.widthHeight}');
+    print('_minus ${board.widthHeight}');
   }
 
   void _info(Board board) {
-    debugPrint('_info ${board.key1}');
-
-    final RenderBox renderBox =
-        board.key1.currentContext?.findRenderObject() as RenderBox;
-
-    final Size size = renderBox.size; // or _widgetKey.currentContext?.size
-    print('Size: ${size.width}, ${size.height}');
-
-    final Offset offset = renderBox.localToGlobal(Offset.zero);
-    print('Offset: ${offset.dx}, ${offset.dy}');
-    print(
-        'Position: ${(offset.dx + size.width) / 2}, ${(offset.dy + size.height) / 2}');
-
-    board.calculateDragAndDropTargetSquare();
+    print('_info');
   }
 }
