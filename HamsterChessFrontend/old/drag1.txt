@@ -1,0 +1,16 @@
+*
+    }, onWillAccept: (BoardMovement? data) {
+      if (data != null) {
+        log('onWillAccept: $data');
+      }
+      return true;
+    }, onAccept: (BoardMovement data) {
+      log('onAccept: $data');
+      setState(() {
+        data.to.piece = data.from.piece;
+        data.to.pieceColor = data.from.pieceColor;
+        data.from.piece = Piece.none;
+        data.from.pieceColor = PieceColor.none;
+      });
+    }));
+*

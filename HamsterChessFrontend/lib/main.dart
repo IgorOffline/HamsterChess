@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
@@ -203,7 +204,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   Widget _itemBuilder(BuildContext context, int index, Board board) {
     return GridTile(
-        child: DragTarget<BoardMovement>(builder: (
+        child: DragTarget<int>(builder: (
       BuildContext context,
       List<dynamic> accepted,
       List<dynamic> rejected,
@@ -212,9 +213,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           decoration: BoxDecoration(
               color: _color(index, board),
               border: Border.all(color: Colors.black, width: 0.5)),
-          child: Draggable<BoardMovement>(
-              data: BoardMovement(
-                  board.squares.elementAt(index), board.squares.elementAt(0)),
+          child: Draggable<int>(
+              data: index,
               feedback: Container(
                 color: Colors.transparent,
                 height: 100,
@@ -227,8 +227,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   color: Colors.transparent,
                   child: Icon(Icons.account_balance)),
               child: _gridTile(index, board)));
-    }, onAccept: (data) {
-      log('data: $data');
+    }, onWillAccept: (int? data) {
+      if (data != null) {
+        log('onWillAccept: $data');
+      }
+      return true;
+    }, onAcceptWithDetails: (DragTargetDetails<int?> data) {
+      log('onAcceptWithDetails: ${data.data}, ${data.offset}');
     }));
   }
 
