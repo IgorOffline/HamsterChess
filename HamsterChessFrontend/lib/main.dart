@@ -105,7 +105,7 @@ class BoardSquare {
 }
 
 class Board {
-  int size = 8;
+  final size = 8;
   double widthHeight = 441;
   final Map<int, BoardSquare> indexSquare = {};
 
@@ -142,6 +142,19 @@ class Board {
     }
 
     throw UnimplementedError('Square piece unknown');
+  }
+
+  bool canMove(int fromIndex, int toIndex) {
+    return (toIndex == fromIndex + 1) || (toIndex == fromIndex - 1);
+  }
+
+  void move(int fromIndex, int toIndex) {
+    var fromSquare = indexSquare[fromIndex]!;
+    var toSquare = indexSquare[toIndex]!;
+    toSquare.piece = fromSquare.piece;
+    toSquare.pieceColor = fromSquare.pieceColor;
+    fromSquare.piece = Piece.none;
+    fromSquare.pieceColor = PieceColor.none;
   }
 }
 
@@ -219,13 +232,20 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   height: 100.0,
                   width: 100.0,
                   color: Colors.transparent,
-                  child: Icon(Icons.account_balance)),
+                  child: Icon(Icons.directions_run)),
               child: _gridTile(index, board)));
     }, onWillAccept: (int? data) {
       if (data != null) {
-        print('onWillAccept ($index): $data');
+        print('onWillAccept dataFrom: $data, indexTo: $index');
+        return board.canMove(data, index);
       }
-      return true;
+
+      return false;
+    }, onAccept: (int data) {
+      print('onAccept dataFrom: $data, indexTo: $index');
+      setState(() {
+        board.move(data, index);
+      });
     }));
   }
 
