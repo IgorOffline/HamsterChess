@@ -10,4 +10,9 @@ public class RController {
     String home() {
         return "Hello, World!";
     }
+
+    @GetMapping("/plusMinus")
+    GameMaster plusMinus() {
+        return new GameMaster();
+    }
 }
