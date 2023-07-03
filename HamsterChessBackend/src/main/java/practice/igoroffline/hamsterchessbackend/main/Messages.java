@@ -1,4 +1,4 @@
-package practice.igoroffline.hamsterChessBackend.main;
+package practice.igoroffline.hamsterchessbackend.main;
 
 public class Messages {
     public static final String UNKNOWN_LETTER = "Unknown Letter";

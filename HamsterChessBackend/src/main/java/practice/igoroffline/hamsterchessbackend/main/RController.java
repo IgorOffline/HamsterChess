@@ -1,7 +1,8 @@
-package practice.igoroffline.hamsterChessBackend.main;
+package practice.igoroffline.hamsterchessbackend.main;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import practice.igoroffline.hamsterchessbackend.board.EnrichedBoard;
 
 @RestController
 public class RController {
@@ -12,7 +13,7 @@ public class RController {
     }
 
     @GetMapping("/plusMinus")
-    GameMaster plusMinus() {
-        return new GameMaster();
+    EnrichedBoard plusMinus() {
+        return new GameMaster().getEnrichedBoard();
     }
 }

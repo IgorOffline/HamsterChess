@@ -1,6 +1,6 @@
-package practice.igoroffline.hamsterChessBackend.board;
+package practice.igoroffline.hamsterchessbackend.board;
 
-import practice.igoroffline.hamsterChessBackend.main.Messages;
+import practice.igoroffline.hamsterchessbackend.main.Messages;
 
 public class LetterNumber {
 

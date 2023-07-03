@@ -1,4 +1,4 @@
-package practice.igoroffline.hamsterChessBackend.board;
+package practice.igoroffline.hamsterchessbackend.board;
 
 import lombok.*;
 
