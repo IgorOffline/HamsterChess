@@ -162,54 +162,63 @@ class Board {
     fromSquare.pieceColor = PieceColor.none;
   }
 
-  Future<Album> fetchAlbum() async {
-    final response = await http
-        .get(Uri.parse('https://jsonplaceholder.typicode.com/albums/1'));
-
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      return Album.fromJson(jsonDecode(response.body));
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load album');
-    }
-  }
-
-  Future<String> fetchReset() async {
+  Future<BoardB> fetchReset() async {
     final response = await http.get(Uri.parse('http://localhost:8080/reset'));
 
     if (response.statusCode == 200) {
-      return response.body;
+      return BoardB.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('fetchReset failed');
     }
   }
 }
 
-class Album {
-  final int userId;
-  final int id;
-  final String title;
+class BoardB {
+  List<BoardBItem> board;
 
-  const Album({
-    required this.userId,
-    required this.id,
-    required this.title,
+  BoardB({required this.board});
+
+  factory BoardB.fromJson(Map<String, dynamic> json) {
+    List<dynamic> boardList = json['board']['board'];
+    List<BoardBItem> boardItems =
+        boardList.map((item) => BoardBItem.fromJson(item)).toList();
+    return BoardB(board: boardItems);
+  }
+
+  @override
+  String toString() {
+    return '$board';
+  }
+}
+
+class BoardBItem {
+  String letter;
+  String number;
+  String piece;
+  String pieceColor;
+  int index;
+
+  BoardBItem({
+    required this.letter,
+    required this.number,
+    required this.piece,
+    required this.pieceColor,
+    required this.index,
   });
 
-  factory Album.fromJson(Map<String, dynamic> json) {
-    return Album(
-      userId: json['userId'],
-      id: json['id'],
-      title: json['title'],
+  factory BoardBItem.fromJson(Map<String, dynamic> json) {
+    return BoardBItem(
+      letter: json['letter'],
+      number: json['number'],
+      piece: json['piece'],
+      pieceColor: json['pieceColor'],
+      index: json['index'],
     );
   }
 
   @override
   String toString() {
-    return '$userId,$id-$title';
+    return '$index';
   }
 }
 
@@ -249,19 +258,19 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           ),
           Row(children: <Widget>[
             FloatingActionButton(
-                onPressed: () => _plus(board),
+                onPressed: () => _plus(),
                 tooltip: '+',
                 child: const Icon(Icons.add)),
             FloatingActionButton(
-                onPressed: () => _minus(board),
+                onPressed: () => _minus(),
                 tooltip: '-',
                 child: const Icon(Icons.remove)),
             FloatingActionButton(
-                onPressed: () => _info(board),
+                onPressed: () => _info(),
                 tooltip: 'info',
                 child: const Text('info')),
             FloatingActionButton(
-                onPressed: () => _reset(board),
+                onPressed: () => _reset(),
                 tooltip: 'reset',
                 child: const Text('reset')),
           ])
@@ -292,7 +301,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   width: 100.0,
                   color: Colors.transparent,
                   child: Icon(Icons.directions_run)),
-              child: _gridTile(index, board)));
+              child: _gridTile(index)));
     }, onWillAccept: (int? data) {
       if (data != null) {
         print('onWillAccept dataFrom: $data, indexTo: $index');
@@ -323,7 +332,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     throw IndexError(index, board.size * board.size);
   }
 
-  Widget _gridTile(int index, Board board) {
+  Widget _gridTile(int index) {
     final square = board.indexSquare[index]!;
     if (square.piece == Piece.none) {
       return Column(children: <Widget>[
@@ -337,57 +346,53 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     }
   }
 
-  void _plus(Board board) {
+  void _plus() {
     setState(() {
       board.widthHeight += 11;
     });
     print('_plus ${board.widthHeight}');
   }
 
-  void _minus(Board board) {
+  void _minus() {
     setState(() {
       board.widthHeight -= 11;
     });
     print('_minus ${board.widthHeight}');
   }
 
-  void _info(Board board) {
-    // board.fetchAlbum().then((album) => print('album: $album')).onError((error, stackTrace) => print('album error: $error'));
-
+  void _info() {
     print(
         '_info: indexBoardSquare (${board.indexSquare.length}): ${board.indexSquare}');
   }
 
-  void _reset(Board board) {
+  void _reset() {
     board
         .fetchReset()
-        .then((resetJson) => _resetInner(resetJson))
+        .then((boardB) => _resetInner(boardB))
         .onError((error, stackTrace) => print('reset error: $error'));
     print('_reset');
   }
 
-  void _resetInner(String resetJson) {
-    final Map<String, dynamic> decode = jsonDecode(resetJson);
-    final enrichedBoardMap = decode['enrichedBoard'] as Map<String, dynamic>;
+  void _resetInner(BoardB boardB) {
     setState(() {
-      enrichedBoardMap.forEach((keyIndex, valueSquare) {
-        final square = board.indexSquare[int.parse(keyIndex)]!;
-        if (valueSquare['piece'] == 'NONE') {
+      for (var boardBItem in boardB.board) {
+        final square = board.indexSquare[boardBItem.index]!;
+        if (boardBItem.piece == 'NONE') {
           square.piece = Piece.none;
           square.pieceColor = PieceColor.none;
-        } else if (valueSquare['piece'] == 'KING') {
+        } else if (boardBItem.piece == 'KING') {
           square.piece = Piece.king;
-          _setPieceColor(square, valueSquare);
-        } else if (valueSquare['piece'] == 'ROOK') {
+          _setPieceColor(square, boardBItem);
+        } else if (boardBItem.piece == 'ROOK') {
           square.piece = Piece.rook;
-          _setPieceColor(square, valueSquare);
+          _setPieceColor(square, boardBItem);
         }
-      });
+      }
     });
   }
 
-  void _setPieceColor(BoardSquare square, dynamic valueSquare) {
-    if (valueSquare['pieceColor'] == 'WHITE') {
+  void _setPieceColor(BoardSquare square, BoardBItem boardBItem) {
+    if (boardBItem.pieceColor == 'WHITE') {
       square.pieceColor = PieceColor.white;
     } else {
       square.pieceColor = PieceColor.black;
