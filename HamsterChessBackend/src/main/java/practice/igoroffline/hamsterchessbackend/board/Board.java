@@ -26,7 +26,9 @@ public class Board {
 
     private void createBoard() {
 
-        final var filledSquares = List.of(new Square(Letter.E, Number2.N4, Piece.KING, PieceColor.WHITE));
+        final var filledSquares = List.of(
+                new Square(Letter.E, Number2.N5, Piece.KING, PieceColor.BLACK),
+                new Square(Letter.E, Number2.N3, Piece.KING, PieceColor.WHITE));
 
         for (int j = 0; j < 8; j++) {
             for (int i = 0; i < 8; i++) {

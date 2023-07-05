@@ -175,6 +175,16 @@ class Board {
       throw Exception('Failed to load album');
     }
   }
+
+  Future<String> fetchReset() async {
+    final response = await http.get(Uri.parse('http://localhost:8080/reset'));
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception('fetchReset failed');
+    }
+  }
 }
 
 class Album {
@@ -348,25 +358,38 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   }
 
   void _reset(Board board) {
-    const enrichedBoardJson =
-        '{"enrichedBoard":{"0":{"letter":"A","number":"N8","piece":"NONE","pieceColor":"NONE"},"1":{"letter":"B","number":"N8","piece":"NONE","pieceColor":"NONE"},"2":{"letter":"C","number":"N8","piece":"NONE","pieceColor":"NONE"},"3":{"letter":"D","number":"N8","piece":"NONE","pieceColor":"NONE"},"4":{"letter":"E","number":"N8","piece":"NONE","pieceColor":"NONE"},"5":{"letter":"F","number":"N8","piece":"NONE","pieceColor":"NONE"},"6":{"letter":"G","number":"N8","piece":"NONE","pieceColor":"NONE"},"7":{"letter":"H","number":"N8","piece":"NONE","pieceColor":"NONE"},"8":{"letter":"A","number":"N7","piece":"NONE","pieceColor":"NONE"},"9":{"letter":"B","number":"N7","piece":"NONE","pieceColor":"NONE"},"10":{"letter":"C","number":"N7","piece":"NONE","pieceColor":"NONE"},"11":{"letter":"D","number":"N7","piece":"NONE","pieceColor":"NONE"},"12":{"letter":"E","number":"N7","piece":"NONE","pieceColor":"NONE"},"13":{"letter":"F","number":"N7","piece":"NONE","pieceColor":"NONE"},"14":{"letter":"G","number":"N7","piece":"NONE","pieceColor":"NONE"},"15":{"letter":"H","number":"N7","piece":"NONE","pieceColor":"NONE"},"16":{"letter":"A","number":"N6","piece":"NONE","pieceColor":"NONE"},"17":{"letter":"B","number":"N6","piece":"NONE","pieceColor":"NONE"},"18":{"letter":"C","number":"N6","piece":"NONE","pieceColor":"NONE"},"19":{"letter":"D","number":"N6","piece":"NONE","pieceColor":"NONE"},"20":{"letter":"E","number":"N6","piece":"NONE","pieceColor":"NONE"},"21":{"letter":"F","number":"N6","piece":"NONE","pieceColor":"NONE"},"22":{"letter":"G","number":"N6","piece":"NONE","pieceColor":"NONE"},"23":{"letter":"H","number":"N6","piece":"NONE","pieceColor":"NONE"},"24":{"letter":"A","number":"N5","piece":"NONE","pieceColor":"NONE"},"25":{"letter":"B","number":"N5","piece":"NONE","pieceColor":"NONE"},"26":{"letter":"C","number":"N5","piece":"NONE","pieceColor":"NONE"},"27":{"letter":"D","number":"N5","piece":"NONE","pieceColor":"NONE"},"28":{"letter":"E","number":"N5","piece":"NONE","pieceColor":"NONE"},"29":{"letter":"F","number":"N5","piece":"NONE","pieceColor":"NONE"},"30":{"letter":"G","number":"N5","piece":"NONE","pieceColor":"NONE"},"31":{"letter":"H","number":"N5","piece":"NONE","pieceColor":"NONE"},"32":{"letter":"A","number":"N4","piece":"NONE","pieceColor":"NONE"},"33":{"letter":"B","number":"N4","piece":"NONE","pieceColor":"NONE"},"34":{"letter":"C","number":"N4","piece":"NONE","pieceColor":"NONE"},"35":{"letter":"D","number":"N4","piece":"NONE","pieceColor":"NONE"},"36":{"letter":"E","number":"N4","piece":"KING","pieceColor":"WHITE"},"37":{"letter":"F","number":"N4","piece":"NONE","pieceColor":"NONE"},"38":{"letter":"G","number":"N4","piece":"NONE","pieceColor":"NONE"},"39":{"letter":"H","number":"N4","piece":"NONE","pieceColor":"NONE"},"40":{"letter":"A","number":"N3","piece":"NONE","pieceColor":"NONE"},"41":{"letter":"B","number":"N3","piece":"NONE","pieceColor":"NONE"},"42":{"letter":"C","number":"N3","piece":"NONE","pieceColor":"NONE"},"43":{"letter":"D","number":"N3","piece":"NONE","pieceColor":"NONE"},"44":{"letter":"E","number":"N3","piece":"NONE","pieceColor":"NONE"},"45":{"letter":"F","number":"N3","piece":"NONE","pieceColor":"NONE"},"46":{"letter":"G","number":"N3","piece":"NONE","pieceColor":"NONE"},"47":{"letter":"H","number":"N3","piece":"NONE","pieceColor":"NONE"},"48":{"letter":"A","number":"N2","piece":"NONE","pieceColor":"NONE"},"49":{"letter":"B","number":"N2","piece":"NONE","pieceColor":"NONE"},"50":{"letter":"C","number":"N2","piece":"NONE","pieceColor":"NONE"},"51":{"letter":"D","number":"N2","piece":"NONE","pieceColor":"NONE"},"52":{"letter":"E","number":"N2","piece":"NONE","pieceColor":"NONE"},"53":{"letter":"F","number":"N2","piece":"NONE","pieceColor":"NONE"},"54":{"letter":"G","number":"N2","piece":"NONE","pieceColor":"NONE"},"55":{"letter":"H","number":"N2","piece":"NONE","pieceColor":"NONE"},"56":{"letter":"A","number":"N1","piece":"NONE","pieceColor":"NONE"},"57":{"letter":"B","number":"N1","piece":"NONE","pieceColor":"NONE"},"58":{"letter":"C","number":"N1","piece":"NONE","pieceColor":"NONE"},"59":{"letter":"D","number":"N1","piece":"NONE","pieceColor":"NONE"},"60":{"letter":"E","number":"N1","piece":"NONE","pieceColor":"NONE"},"61":{"letter":"F","number":"N1","piece":"NONE","pieceColor":"NONE"},"62":{"letter":"G","number":"N1","piece":"NONE","pieceColor":"NONE"},"63":{"letter":"H","number":"N1","piece":"NONE","pieceColor":"NONE"}}}';
+    board
+        .fetchReset()
+        .then((resetJson) => _resetInner(resetJson))
+        .onError((error, stackTrace) => print('reset error: $error'));
+    print('_reset');
+  }
 
-    final Map<String, dynamic> decode = jsonDecode(enrichedBoardJson);
+  void _resetInner(String resetJson) {
+    final Map<String, dynamic> decode = jsonDecode(resetJson);
     final enrichedBoardMap = decode['enrichedBoard'] as Map<String, dynamic>;
     setState(() {
       enrichedBoardMap.forEach((keyIndex, valueSquare) {
         final square = board.indexSquare[int.parse(keyIndex)]!;
-        // short test version
         if (valueSquare['piece'] == 'NONE') {
           square.piece = Piece.none;
           square.pieceColor = PieceColor.none;
-        } else {
+        } else if (valueSquare['piece'] == 'KING') {
           square.piece = Piece.king;
-          square.pieceColor = PieceColor.white;
+          _setPieceColor(square, valueSquare);
+        } else if (valueSquare['piece'] == 'ROOK') {
+          square.piece = Piece.rook;
+          _setPieceColor(square, valueSquare);
         }
       });
     });
+  }
 
-    print('_reset');
+  void _setPieceColor(BoardSquare square, dynamic valueSquare) {
+    if (valueSquare['pieceColor'] == 'WHITE') {
+      square.pieceColor = PieceColor.white;
+    } else {
+      square.pieceColor = PieceColor.black;
+    }
   }
 }
