@@ -6,6 +6,7 @@ import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @EqualsAndHashCode
@@ -41,5 +42,29 @@ public class Board {
                 }
             }
         }
+    }
+
+    public boolean squareFound(int i, int j, Square square) {
+        return i == square.getLetter().index && j == square.getNumber().index;
+    }
+
+    public Optional<Square> findNextNumberSquare(Letter letter, Number2 number) {
+        // TODO implement me
+        throw new UnsupportedOperationException();
+    }
+
+    public Optional<Square> findPreviousNumberSquare(Letter letter, Number2 number) {
+        // TODO implement me
+        throw new UnsupportedOperationException();
+    }
+
+    public Optional<Square> findNextLetterSquare(Letter letter, Number2 number) {
+        // TODO implement me
+        throw new UnsupportedOperationException();
+    }
+
+    public Optional<Square> findPreviousLetterSquare(Letter letter, Number2 number) {
+        // TODO implement me
+        throw new UnsupportedOperationException();
     }
 }
