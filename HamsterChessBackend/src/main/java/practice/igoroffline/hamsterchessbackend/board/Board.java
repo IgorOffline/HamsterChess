@@ -20,6 +20,10 @@ public class Board {
         createBoard();
     }
 
+    public Board(List<Square> board) {
+        this.board = board;
+    }
+
     private void createBoard() {
 
         final var filledSquares = List.of(new Square(Letter.E, Number2.N4, Piece.KING, PieceColor.WHITE));
@@ -66,5 +70,14 @@ public class Board {
     public Optional<Square> findPreviousLetterSquare(Letter letter, Number2 number) {
         // TODO implement me
         throw new UnsupportedOperationException();
+    }
+
+    public Board deepCopy() {
+        final var list = new ArrayList<Square>();
+        for (int i = 0; i < board.size(); i++) {
+            final var oldSquare = board.get(i);
+            list.add(oldSquare.copy());
+        }
+        return new Board(list);
     }
 }

@@ -16,8 +16,12 @@ public class GameMaster {
 
     private final Board board;
     private final LegalMoves legalMoves;
+
+    @Setter
     private Optional<Square> fromSquare;
+    @Setter
     private Optional<Square> toSquare;
+
     private boolean whiteToMove = true;
 
     @Setter
@@ -25,14 +29,23 @@ public class GameMaster {
     @Setter
     private boolean blackKingInCheck = false;
 
+    @Setter
     private boolean whiteKingCheckmated = false;
+    @Setter
     private boolean blackKingCheckmated = false;
-    private final EnrichedBoard enrichedBoard;
+
+    public EnrichedBoard getEnrichedBoard() {
+        return new EnrichedBoard(board);
+    }
 
     public GameMaster() {
         this.board = new Board();
         this.legalMoves = new LegalMoves();
-        this.enrichedBoard = new EnrichedBoard(board);
+    }
+
+    public GameMaster(Board board, LegalMoves legalMoves) {
+        this.board = board;
+        this.legalMoves = legalMoves;
     }
 
     public void moveAndCalculate() {

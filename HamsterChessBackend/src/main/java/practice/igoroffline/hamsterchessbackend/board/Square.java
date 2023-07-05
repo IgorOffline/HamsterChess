@@ -19,4 +19,8 @@ public class Square {
     public static boolean isLetterNumberEqual(Letter letter1, Letter letter2, Number2 number1, Number2 number2) {
         return letter1 == letter2 && number1 == number2;
     }
+
+    public Square copy() {
+        return new Square(letter, number, piece, pieceColor);
+    }
 }
