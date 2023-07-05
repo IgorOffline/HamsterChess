@@ -112,6 +112,7 @@ class Board {
   final size = 8;
   double widthHeight = 441;
   final Map<int, BoardSquare> indexSquare = {};
+  Map<int, List<int>> legalMoves = {}; // indexLegalFrom + indicesLegalTo
 
   Board() {
     for (var j = 0; j < size; j++) {

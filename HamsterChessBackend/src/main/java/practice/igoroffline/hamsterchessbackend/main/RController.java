@@ -21,6 +21,11 @@ public class RController {
         return gameMaster.getEnrichedBoard();
     }
 
+    @GetMapping("/reset2")
+    GameMaster reset2() {
+        return new GameMaster();
+    }
+
     @PostMapping("/move")
     EnrichedBoard move() {
         return gameMaster.getEnrichedBoard();

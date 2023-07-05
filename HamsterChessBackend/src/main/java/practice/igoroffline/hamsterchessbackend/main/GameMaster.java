@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import practice.igoroffline.hamsterchessbackend.board.*;
+import practice.igoroffline.hamsterchessbackend.legal.EnrichedLegalMoves;
 import practice.igoroffline.hamsterchessbackend.legal.LegalMoves;
 
 import java.util.Optional;
@@ -37,15 +38,20 @@ public class GameMaster {
     public EnrichedBoard getEnrichedBoard() {
         return new EnrichedBoard(board);
     }
+    public EnrichedLegalMoves getEnrichedLegalMoves() {
+        return new EnrichedLegalMoves(legalMoves);
+    }
 
     public GameMaster() {
         this.board = new Board();
         this.legalMoves = new LegalMoves();
+        legalMoves.calculate(this);
     }
 
     public GameMaster(Board board, LegalMoves legalMoves) {
         this.board = board;
         this.legalMoves = legalMoves;
+        legalMoves.calculate(this);
     }
 
     public void moveAndCalculate() {
