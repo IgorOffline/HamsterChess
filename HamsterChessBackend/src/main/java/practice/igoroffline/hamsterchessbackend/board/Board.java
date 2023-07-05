@@ -53,23 +53,43 @@ public class Board {
     }
 
     public Optional<Square> findNextNumberSquare(Letter letter, Number2 number) {
-        // TODO implement me
-        throw new UnsupportedOperationException();
+        final var nextNumberIndex = number.index + 1;
+        if (LetterNumber.isEnumLegal(LetterNumber.getNumberEnum(nextNumberIndex))) {
+            final var squareIndex = (8 * (7 - nextNumberIndex)) + letter.index;
+            return Optional.of(board.get(squareIndex));
+        }
+
+        return Optional.empty();
     }
 
     public Optional<Square> findPreviousNumberSquare(Letter letter, Number2 number) {
-        // TODO implement me
-        throw new UnsupportedOperationException();
+        final var previousNumberIndex = number.index - 1;
+        if (LetterNumber.isEnumLegal(LetterNumber.getNumberEnum(previousNumberIndex))) {
+            final var squareIndex = (8 * (7 - previousNumberIndex)) + letter.index;
+            return Optional.of(board.get(squareIndex));
+        }
+
+        return Optional.empty();
     }
 
     public Optional<Square> findNextLetterSquare(Letter letter, Number2 number) {
-        // TODO implement me
-        throw new UnsupportedOperationException();
+        final var nextLetterIndex = letter.index + 1;
+        if (LetterNumber.isEnumLegal(LetterNumber.getLetterEnum(nextLetterIndex))) {
+            final var squareIndex = (8 * (7 - number.index)) + nextLetterIndex;
+            return Optional.of(board.get(squareIndex));
+        }
+
+        return Optional.empty();
     }
 
     public Optional<Square> findPreviousLetterSquare(Letter letter, Number2 number) {
-        // TODO implement me
-        throw new UnsupportedOperationException();
+        final var previousLetterIndex = letter.index - 1;
+        if (LetterNumber.isEnumLegal(LetterNumber.getLetterEnum(previousLetterIndex))) {
+            final var squareIndex = (8 * (7 - number.index)) + previousLetterIndex;
+            return Optional.of(board.get(squareIndex));
+        }
+
+        return Optional.empty();
     }
 
     public Board deepCopy() {
