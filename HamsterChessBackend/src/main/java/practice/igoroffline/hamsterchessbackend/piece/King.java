@@ -1,6 +1,10 @@
 package practice.igoroffline.hamsterchessbackend.piece;
 
-import practice.igoroffline.hamsterchessbackend.board.*;
+import practice.igoroffline.hamsterchessbackend.board.Board;
+import practice.igoroffline.hamsterchessbackend.board.LetterNumber;
+import practice.igoroffline.hamsterchessbackend.board.Piece;
+import practice.igoroffline.hamsterchessbackend.board.PieceColor;
+import practice.igoroffline.hamsterchessbackend.board.Square;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,7 +3,6 @@ package practice.igoroffline.hamsterchessbackend.main;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import practice.igoroffline.hamsterchessbackend.board.EnrichedBoard;
 
 @RestController
 public class RController {
@@ -16,18 +15,13 @@ public class RController {
     }
 
     @GetMapping("/reset")
-    EnrichedBoard reset() {
+    GameMaster reset() {
         gameMaster = new GameMaster();
-        return gameMaster.getEnrichedBoard();
-    }
-
-    @GetMapping("/reset2")
-    GameMaster reset2() {
-        return new GameMaster();
+        return gameMaster;
     }
 
     @PostMapping("/move")
-    EnrichedBoard move() {
-        return gameMaster.getEnrichedBoard();
+    GameMaster move() {
+        throw new UnsupportedOperationException();
     }
 }
