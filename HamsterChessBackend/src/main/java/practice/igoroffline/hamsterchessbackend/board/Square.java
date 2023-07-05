@@ -16,6 +16,10 @@ public class Square {
     @Setter
     private PieceColor pieceColor;
 
+    public int getIndex() {
+        return letter.index + 8 * LetterNumber.getNumberIndexReverse(number);
+    }
+
     public static boolean isLetterNumberEqual(Letter letter1, Letter letter2, Number2 number1, Number2 number2) {
         return letter1 == letter2 && number1 == number2;
     }

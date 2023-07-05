@@ -80,6 +80,20 @@ public class LetterNumber {
         };
     }
 
+    public static int getNumberIndexReverse(Number2 number) {
+        return switch (number) {
+            case N1 -> 7;
+            case N2 -> 6;
+            case N3 -> 5;
+            case N4 -> 4;
+            case N5 -> 3;
+            case N6 -> 2;
+            case N7 -> 1;
+            case N8 -> 0;
+            case NMinus1, N99 -> throw new IllegalArgumentException(Messages.UNKNOWN_NUMBER);
+        };
+    }
+
     public static boolean isEnumLegal(Letter letter) {
         return letter.index >= 0 && letter.index < 8;
     }
