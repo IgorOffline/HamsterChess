@@ -150,7 +150,19 @@ class Board {
   }
 
   bool canMove(int fromIndex, int toIndex) {
-    return (toIndex == fromIndex + 1) || (toIndex == fromIndex - 1);
+    if (reset == null) {
+      return (toIndex == fromIndex + 1) || (toIndex == fromIndex - 1);
+    }
+
+    for (var entry in reset!.legalMoves.entries) {
+      for (var value in entry.value) {
+        if (fromIndex == entry.key && toIndex == value) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   void move(int fromIndex, int toIndex) {
@@ -178,11 +190,25 @@ class Reset {
   bool whiteToMove;
   Map<int, List<int>> legalMoves = {}; // indexLegalFrom + indicesLegalTo
 
-  Reset({required this.boardB, required this.whiteToMove});
+  Reset(
+      {required this.boardB,
+      required this.whiteToMove,
+      required this.legalMoves});
 
   factory Reset.fromJson(Map<String, dynamic> json) {
-    bool whiteToMove = json['whiteToMove'];
-    return Reset(boardB: BoardB.fromJson(json), whiteToMove: whiteToMove);
+    Map<int, List<int>> resetLegalMoves = {};
+    Map<String, dynamic> jsonLegalMoves =
+        json['enrichedLegalMoves']['legalMoves'];
+    jsonLegalMoves.forEach((key, value) {
+      //print('jsonLegalMoves key: $key, value: $value'); // jsonLegalMoves key: 44, value: [43, 51, 45, 53, 52]
+      var intKey = int.parse(key);
+      var intValues = List<int>.from(value as List);
+      resetLegalMoves.putIfAbsent(intKey, () => intValues);
+    });
+    return Reset(
+        boardB: BoardB.fromJson(json),
+        whiteToMove: json['whiteToMove'],
+        legalMoves: resetLegalMoves);
   }
 
   @override
