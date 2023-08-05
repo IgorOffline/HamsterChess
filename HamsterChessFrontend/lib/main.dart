@@ -133,56 +133,6 @@ class Board {
 
     return BoardSquare(letter, number, Piece.none, PieceColor.none);
   }
-
-  Widget getWidgetForSquare(BoardSquare square) {
-    var pieceSize = (widthHeight / size) * 0.62;
-    if (square.pieceColor == PieceColor.white) {
-      if (square.piece == Piece.king) {
-        return WhiteKing(size: pieceSize);
-      }
-    } else if (square.pieceColor == PieceColor.black) {
-      if (square.piece == Piece.king) {
-        return BlackKing(size: pieceSize);
-      }
-    }
-
-    throw UnimplementedError('Square piece unknown');
-  }
-
-  bool canMove(int fromIndex, int toIndex) {
-    if (reset == null) {
-      return (toIndex == fromIndex + 1) || (toIndex == fromIndex - 1);
-    }
-
-    for (var entry in reset!.legalMoves.entries) {
-      for (var value in entry.value) {
-        if (fromIndex == entry.key && toIndex == value) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-  void move(int fromIndex, int toIndex) {
-    var fromSquare = indexSquare[fromIndex]!;
-    var toSquare = indexSquare[toIndex]!;
-    toSquare.piece = fromSquare.piece;
-    toSquare.pieceColor = fromSquare.pieceColor;
-    fromSquare.piece = Piece.none;
-    fromSquare.pieceColor = PieceColor.none;
-  }
-
-  Future<Reset> fetchReset() async {
-    final response = await http.get(Uri.parse('http://localhost:8080/reset'));
-
-    if (response.statusCode == 200) {
-      return Reset.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('fetchReset failed');
-    }
-  }
 }
 
 class Reset {
@@ -354,16 +304,126 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     }, onWillAccept: (int? data) {
       if (data != null) {
         print('onWillAccept dataFrom: $data, indexTo: $index');
-        return board.canMove(data, index);
+        return _canMove(data, index);
       }
 
       return false;
     }, onAccept: (int data) {
       print('onAccept dataFrom: $data, indexTo: $index');
-      setState(() {
-        board.move(data, index);
-      });
+      _move(data, index);
     }));
+  }
+
+  Widget _gridTile(int index) {
+    final square = board.indexSquare[index]!;
+    if (square.piece == Piece.none) {
+      return Column(children: <Widget>[
+        Text('${square.letter}${square.number}', textScaleFactor: 0.75),
+      ]);
+    } else {
+      return Column(children: <Widget>[
+        Text('${square.letter}${square.number}', textScaleFactor: 0.75),
+        _getWidgetForSquare(square),
+      ]);
+    }
+  }
+
+  Widget _getWidgetForSquare(BoardSquare square) {
+    var pieceSize = (board.widthHeight / board.size) * 0.62;
+    if (square.pieceColor == PieceColor.white) {
+      if (square.piece == Piece.king) {
+        return WhiteKing(size: pieceSize);
+      }
+    } else if (square.pieceColor == PieceColor.black) {
+      if (square.piece == Piece.king) {
+        return BlackKing(size: pieceSize);
+      }
+    }
+
+    throw UnimplementedError('Square piece unknown');
+  }
+
+  bool _canMove(int fromIndex, int toIndex) {
+    if (board.reset == null) {
+      return (toIndex == fromIndex + 1) || (toIndex == fromIndex - 1);
+    }
+
+    for (var entry in board.reset!.legalMoves.entries) {
+      for (var value in entry.value) {
+        if (fromIndex == entry.key && toIndex == value) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  void _move(int from, int to) {
+    _fetchMove(from, to)
+        .then((reset) => _resetInner(reset, false))
+        .onError((error, stackTrace) => print('reset error: $error'));
+    setState(() {
+      var fromSquare = board.indexSquare[from]!;
+      var toSquare = board.indexSquare[to]!;
+      toSquare.piece = fromSquare.piece;
+      toSquare.pieceColor = fromSquare.pieceColor;
+      fromSquare.piece = Piece.none;
+      fromSquare.pieceColor = PieceColor.none;
+    });
+  }
+
+  void _resetInner(Reset reset, bool fullReset) {
+    setState(() {
+      board.reset = reset;
+      if (fullReset) {
+        for (var boardBItem in reset.boardB!.board) {
+          final square = board.indexSquare[boardBItem.index]!;
+          if (boardBItem.piece == 'NONE') {
+            square.piece = Piece.none;
+            square.pieceColor = PieceColor.none;
+          } else if (boardBItem.piece == 'KING') {
+            square.piece = Piece.king;
+            _setPieceColor(square, boardBItem);
+          } else if (boardBItem.piece == 'ROOK') {
+            square.piece = Piece.rook;
+            _setPieceColor(square, boardBItem);
+          }
+        }
+      }
+      reset.cleanup();
+    });
+  }
+
+  void _setPieceColor(BoardSquare square, BoardBItem boardBItem) {
+    if (boardBItem.pieceColor == 'WHITE') {
+      square.pieceColor = PieceColor.white;
+    } else {
+      square.pieceColor = PieceColor.black;
+    }
+  }
+
+  Future<Reset> _fetchReset() async {
+    final response = await http.get(Uri.parse('http://localhost:8080/reset'));
+
+    if (response.statusCode == 200) {
+      return Reset.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('fetchReset failed');
+    }
+  }
+
+  Future<Reset> _fetchMove(int from, int to) async {
+    final response = await http.post(Uri.parse('http://localhost:8080/move'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, int>{'from': from, 'to': to}));
+    if (response.statusCode == 200) {
+      return Reset.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('fetchReset failed');
+    }
   }
 
   Color _color(int index, Board board) {
@@ -389,20 +449,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     return WhitePawn();
   }
 
-  Widget _gridTile(int index) {
-    final square = board.indexSquare[index]!;
-    if (square.piece == Piece.none) {
-      return Column(children: <Widget>[
-        Text('${square.letter}${square.number}', textScaleFactor: 0.75),
-      ]);
-    } else {
-      return Column(children: <Widget>[
-        Text('${square.letter}${square.number}', textScaleFactor: 0.75),
-        board.getWidgetForSquare(square),
-      ]);
-    }
-  }
-
   void _plus() {
     setState(() {
       board.widthHeight += 11;
@@ -423,38 +469,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   }
 
   void _reset() {
-    board
-        .fetchReset()
-        .then((reset) => _resetInner(reset))
+    _fetchReset()
+        .then((reset) => _resetInner(reset, true))
         .onError((error, stackTrace) => print('reset error: $error'));
     print('_reset');
-  }
-
-  void _resetInner(Reset reset) {
-    setState(() {
-      board.reset = reset;
-      for (var boardBItem in reset.boardB!.board) {
-        final square = board.indexSquare[boardBItem.index]!;
-        if (boardBItem.piece == 'NONE') {
-          square.piece = Piece.none;
-          square.pieceColor = PieceColor.none;
-        } else if (boardBItem.piece == 'KING') {
-          square.piece = Piece.king;
-          _setPieceColor(square, boardBItem);
-        } else if (boardBItem.piece == 'ROOK') {
-          square.piece = Piece.rook;
-          _setPieceColor(square, boardBItem);
-        }
-      }
-      board.reset!.cleanup();
-    });
-  }
-
-  void _setPieceColor(BoardSquare square, BoardBItem boardBItem) {
-    if (boardBItem.pieceColor == 'WHITE') {
-      square.pieceColor = PieceColor.white;
-    } else {
-      square.pieceColor = PieceColor.black;
-    }
   }
 }
