@@ -357,7 +357,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   Widget _gameStateVisualizer() {
     if (board.reset != null) {
-      return WhiteKing();
+      return board.reset!.whiteToMove ? WhiteKing() : BlackKing();
     }
 
     return WhitePawn();
