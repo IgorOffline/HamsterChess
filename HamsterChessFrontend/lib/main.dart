@@ -112,7 +112,7 @@ class Board {
   final size = 8;
   double widthHeight = 441;
   final Map<int, BoardSquare> indexSquare = {};
-  Map<int, List<int>> legalMoves = {}; // indexLegalFrom + indicesLegalTo
+  Reset? reset;
 
   Board() {
     for (var j = 0; j < size; j++) {
@@ -162,14 +162,36 @@ class Board {
     fromSquare.pieceColor = PieceColor.none;
   }
 
-  Future<BoardB> fetchReset() async {
+  Future<Reset> fetchReset() async {
     final response = await http.get(Uri.parse('http://localhost:8080/reset'));
 
     if (response.statusCode == 200) {
-      return BoardB.fromJson(jsonDecode(response.body));
+      return Reset.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('fetchReset failed');
     }
+  }
+}
+
+class Reset {
+  BoardB? boardB;
+  bool whiteToMove;
+  Map<int, List<int>> legalMoves = {}; // indexLegalFrom + indicesLegalTo
+
+  Reset({required this.boardB, required this.whiteToMove});
+
+  factory Reset.fromJson(Map<String, dynamic> json) {
+    bool whiteToMove = json['whiteToMove'];
+    return Reset(boardB: BoardB.fromJson(json), whiteToMove: whiteToMove);
+  }
+
+  @override
+  String toString() {
+    return 'boardB: $boardB, whiteToMove: $whiteToMove';
+  }
+
+  void cleanup() {
+    boardB = null;
   }
 }
 
@@ -273,6 +295,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 onPressed: () => _reset(),
                 tooltip: 'reset',
                 child: const Text('reset')),
+            _gameStateVisualizer(),
           ])
         ]));
   }
@@ -332,6 +355,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     throw IndexError(index, board.size * board.size);
   }
 
+  Widget _gameStateVisualizer() {
+    if (board.reset != null) {
+      return WhiteKing();
+    }
+
+    return WhitePawn();
+  }
+
   Widget _gridTile(int index) {
     final square = board.indexSquare[index]!;
     if (square.piece == Piece.none) {
@@ -362,20 +393,21 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   void _info() {
     print(
-        '_info: indexBoardSquare (${board.indexSquare.length}): ${board.indexSquare}');
+        '_info: indexSquare (${board.indexSquare.length}): ${board.indexSquare}, reset: ${board.reset}');
   }
 
   void _reset() {
     board
         .fetchReset()
-        .then((boardB) => _resetInner(boardB))
+        .then((reset) => _resetInner(reset))
         .onError((error, stackTrace) => print('reset error: $error'));
     print('_reset');
   }
 
-  void _resetInner(BoardB boardB) {
+  void _resetInner(Reset reset) {
     setState(() {
-      for (var boardBItem in boardB.board) {
+      board.reset = reset;
+      for (var boardBItem in reset.boardB!.board) {
         final square = board.indexSquare[boardBItem.index]!;
         if (boardBItem.piece == 'NONE') {
           square.piece = Piece.none;
@@ -388,6 +420,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           _setPieceColor(square, boardBItem);
         }
       }
+      board.reset!.cleanup();
     });
   }
 
