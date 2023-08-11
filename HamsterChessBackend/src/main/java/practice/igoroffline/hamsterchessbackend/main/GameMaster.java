@@ -26,7 +26,7 @@ public class GameMaster {
     @Setter
     private Optional<Square> toSquare;
 
-    private boolean whiteToMove = true;
+    private boolean whiteToMove = false;
 
     @Setter
     private boolean whiteKingInCheck = false;
