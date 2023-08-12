@@ -51,7 +51,6 @@ public class GameMaster {
     public GameMaster(Board board, LegalMoves legalMoves) {
         this.board = board;
         this.legalMoves = legalMoves;
-        legalMoves.calculate(this);
     }
 
     public void moveAndCalculate() {
