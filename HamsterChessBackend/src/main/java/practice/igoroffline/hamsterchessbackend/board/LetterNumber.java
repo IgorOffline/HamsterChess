@@ -20,6 +20,7 @@ public class LetterNumber {
 
     public static Letter getLetterEnum(int letter) {
         return switch (letter) {
+            case -2 -> Letter.L2;
             case -1 -> Letter.L;
             case 0 -> Letter.A;
             case 1 -> Letter.B;
@@ -30,6 +31,7 @@ public class LetterNumber {
             case 6 -> Letter.G;
             case 7 -> Letter.H;
             case 8 -> Letter.R;
+            case 9 -> Letter.R2;
             default -> throw new IllegalArgumentException(Messages.UNKNOWN_LETTER);
         };
     }
@@ -50,6 +52,7 @@ public class LetterNumber {
 
     public static Number2 getNumberEnum(int number) {
         return switch (number) {
+            case -2 -> Number2.NMinus2;
             case -1 -> Number2.NMinus1;
             case 0 -> Number2.N1;
             case 1 -> Number2.N2;
@@ -59,14 +62,16 @@ public class LetterNumber {
             case 5 -> Number2.N6;
             case 6 -> Number2.N7;
             case 7 -> Number2.N8;
-            case 8 -> Number2.N99;
+            case 8 -> Number2.N98;
+            case 9 -> Number2.N99;
             default -> throw new IllegalArgumentException(Messages.UNKNOWN_NUMBER);
         };
     }
 
     public static Number2 getNumberEnumReverse(int number) {
         return switch (number) {
-            case -1 -> Number2.N99;
+            case -2 -> Number2.N99;
+            case -1 -> Number2.N98;
             case 0 -> Number2.N8;
             case 1 -> Number2.N7;
             case 2 -> Number2.N6;
@@ -76,6 +81,7 @@ public class LetterNumber {
             case 6 -> Number2.N2;
             case 7 -> Number2.N1;
             case 8 -> Number2.NMinus1;
+            case 9 -> Number2.NMinus2;
             default -> throw new IllegalArgumentException(Messages.UNKNOWN_NUMBER);
         };
     }
@@ -90,7 +96,7 @@ public class LetterNumber {
             case N6 -> 2;
             case N7 -> 1;
             case N8 -> 0;
-            case NMinus1, N99 -> throw new IllegalArgumentException(Messages.UNKNOWN_NUMBER);
+            case NMinus2, NMinus1, N98, N99 -> throw new IllegalArgumentException(Messages.UNKNOWN_NUMBER);
         };
     }
 
@@ -99,6 +105,6 @@ public class LetterNumber {
     }
 
     public static boolean isEnumLegal(Number2 number) {
-        return number.index >= 0 && number.index <= 7;
+        return number.index >= 0 && number.index < 8;
     }
 }
