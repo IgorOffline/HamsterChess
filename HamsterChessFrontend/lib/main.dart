@@ -26,7 +26,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class MyStatefulWidget extends StatefulWidget {
   const MyStatefulWidget({super.key});
 
@@ -142,12 +141,16 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         return WhiteKing(size: pieceSize);
       } else if (square.piece == Piece.rook) {
         return WhiteRook(size: pieceSize);
+      } else if (square.piece == Piece.bishop) {
+        return WhiteBishop(size: pieceSize);
       }
     } else if (square.pieceColor == PieceColor.black) {
       if (square.piece == Piece.king) {
         return BlackKing(size: pieceSize);
       } else if (square.piece == Piece.rook) {
         return BlackRook(size: pieceSize);
+      } else if (square.piece == Piece.bishop) {
+        return BlackBishop(size: pieceSize);
       }
     }
 
@@ -198,6 +201,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             _setPieceColor(square, boardBItem);
           } else if (boardBItem.piece == 'ROOK') {
             square.piece = Piece.rook;
+            _setPieceColor(square, boardBItem);
+          } else if (boardBItem.piece == 'BISHOP') {
+            square.piece = Piece.bishop;
             _setPieceColor(square, boardBItem);
           }
         }
@@ -254,7 +260,17 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   Widget _gameStateVisualizer() {
     if (board.reset != null) {
-      return board.reset!.whiteToMove ? WhiteKing() : BlackKing();
+      if (board.reset!.whiteKingCheckmated) {
+        return Row(children: [WhiteKing(), WhiteKing(), WhiteKing()]);
+      } else if (board.reset!.blackKingCheckmated) {
+        return Row(children: [BlackKing(), BlackKing(), BlackKing()]);
+      } else if (board.reset!.whiteKingInCheck) {
+        return Row(children: [WhiteKing(), WhiteKing()]);
+      } else if (board.reset!.blackKingInCheck) {
+        return Row(children: [BlackKing(), BlackKing()]);
+      } else {
+        return board.reset!.whiteToMove ? WhiteKing() : BlackKing();
+      }
     }
 
     return WhitePawn();

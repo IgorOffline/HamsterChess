@@ -41,7 +41,8 @@ enum BoardNumber {
 enum Piece {
   none("_"),
   king("K"),
-  rook("R");
+  rook("R"),
+  bishop("B");
 
   const Piece(this.name);
 
@@ -112,11 +113,19 @@ class Board {
 class Reset {
   BoardB? boardB;
   bool whiteToMove;
+  bool whiteKingInCheck;
+  bool blackKingInCheck;
+  bool whiteKingCheckmated;
+  bool blackKingCheckmated;
   Map<int, List<int>> legalMoves = {}; // indexLegalFrom + indicesLegalTo
 
   Reset(
       {required this.boardB,
         required this.whiteToMove,
+        required this.whiteKingInCheck,
+        required this.blackKingInCheck,
+        required this.whiteKingCheckmated,
+        required this.blackKingCheckmated,
         required this.legalMoves});
 
   factory Reset.fromJson(Map<String, dynamic> json) {
@@ -132,6 +141,10 @@ class Reset {
     return Reset(
         boardB: BoardB.fromJson(json),
         whiteToMove: json['whiteToMove'],
+        whiteKingInCheck: json['whiteKingInCheck'],
+        blackKingInCheck: json['blackKingInCheck'],
+        whiteKingCheckmated: json['whiteKingCheckmated'],
+        blackKingCheckmated: json['blackKingCheckmated'],
         legalMoves: resetLegalMoves);
   }
 
