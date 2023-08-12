@@ -26,18 +26,6 @@ public class Board {
 
     private void createBoard() {
 
-//        final var filledSquares = List.of(
-//                new Square(Letter.E, Number2.N5, Piece.KING, PieceColor.BLACK),
-//                new Square(Letter.D, Number2.N4, Piece.ROOK, PieceColor.BLACK),
-//                new Square(Letter.E, Number2.N3, Piece.KING, PieceColor.WHITE),
-//                new Square(Letter.F, Number2.N2, Piece.ROOK, PieceColor.WHITE));
-
-//        final var filledSquares = List.of(
-//                new Square(Letter.C, Number2.N6, Piece.KING, PieceColor.BLACK),
-//                new Square(Letter.C, Number2.N4, Piece.ROOK, PieceColor.BLACK),
-//                new Square(Letter.E, Number2.N3, Piece.KING, PieceColor.WHITE),
-//                new Square(Letter.D, Number2.N2, Piece.ROOK, PieceColor.WHITE));
-
         final var filledSquares = List.of(
                 new Square(Letter.C, Number2.N6, Piece.KING, PieceColor.BLACK),
                 new Square(Letter.C, Number2.N4, Piece.ROOK, PieceColor.BLACK),
@@ -160,6 +148,118 @@ public class Board {
         if (LetterNumber.isEnumLegal(LetterNumber.getLetterEnum(nextLetterIndex)) &&
                 LetterNumber.isEnumLegal(LetterNumber.getNumberEnum(previousNumberIndex))) {
             final var squareIndex = (8 * (7 - previousNumberIndex)) + nextLetterIndex;
+            return Optional.of(board.get(squareIndex));
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<Square> findPpLetterNextNumberSquare(Letter letter, Number2 number) {
+
+        final var ppLetterIndex = letter.index - 2;
+        final var nextNumberIndex = number.index + 1;
+
+        if (LetterNumber.isEnumLegal(LetterNumber.getLetterEnum(ppLetterIndex)) &&
+                LetterNumber.isEnumLegal(LetterNumber.getNumberEnum(nextNumberIndex))) {
+            final var squareIndex = (8 * (7 - nextNumberIndex)) + ppLetterIndex;
+            return Optional.of(board.get(squareIndex));
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<Square> findNnNumberPreviousLetterSquare(Letter letter, Number2 number) {
+
+        final var previousLetterIndex = letter.index - 1;
+        final var nnNumberIndex = number.index + 2;
+
+        if (LetterNumber.isEnumLegal(LetterNumber.getLetterEnum(previousLetterIndex)) &&
+                LetterNumber.isEnumLegal(LetterNumber.getNumberEnum(nnNumberIndex))) {
+            final var squareIndex = (8 * (7 - nnNumberIndex)) + previousLetterIndex;
+            return Optional.of(board.get(squareIndex));
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<Square> findNnNumberNextLetterSquare(Letter letter, Number2 number) {
+
+        final var nextLetterIndex = letter.index + 1;
+        final var nnNumberIndex = number.index + 2;
+
+        if (LetterNumber.isEnumLegal(LetterNumber.getLetterEnum(nextLetterIndex)) &&
+                LetterNumber.isEnumLegal(LetterNumber.getNumberEnum(nnNumberIndex))) {
+            final var squareIndex = (8 * (7 - nnNumberIndex)) + nextLetterIndex;
+            return Optional.of(board.get(squareIndex));
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<Square> findNnLetterNextNumberSquare(Letter letter, Number2 number) {
+
+        final var nnLetterIndex = letter.index + 2;
+        final var nextNumberIndex = number.index + 1;
+
+        if (LetterNumber.isEnumLegal(LetterNumber.getLetterEnum(nnLetterIndex)) &&
+                LetterNumber.isEnumLegal(LetterNumber.getNumberEnum(nextNumberIndex))) {
+            final var squareIndex = (8 * (7 - nextNumberIndex)) + nnLetterIndex;
+            return Optional.of(board.get(squareIndex));
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<Square> findPpLetterPreviousNumberSquare(Letter letter, Number2 number) {
+
+        final var ppLetterIndex = letter.index - 2;
+        final var previousNumberIndex = number.index - 1;
+
+        if (LetterNumber.isEnumLegal(LetterNumber.getLetterEnum(ppLetterIndex)) &&
+                LetterNumber.isEnumLegal(LetterNumber.getNumberEnum(previousNumberIndex))) {
+            final var squareIndex = (8 * (7 - previousNumberIndex)) + ppLetterIndex;
+            return Optional.of(board.get(squareIndex));
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<Square> findPpNumberPreviousLetterSquare(Letter letter, Number2 number) {
+
+        final var previousLetterIndex = letter.index - 1;
+        final var ppNumberIndex = number.index - 2;
+
+        if (LetterNumber.isEnumLegal(LetterNumber.getLetterEnum(previousLetterIndex)) &&
+                LetterNumber.isEnumLegal(LetterNumber.getNumberEnum(ppNumberIndex))) {
+            final var squareIndex = (8 * (7 - ppNumberIndex)) + previousLetterIndex;
+            return Optional.of(board.get(squareIndex));
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<Square> findPpNumberNextLetterSquare(Letter letter, Number2 number) {
+
+        final var nextLetterIndex = letter.index + 1;
+        final var ppNumberIndex = number.index - 2;
+
+        if (LetterNumber.isEnumLegal(LetterNumber.getLetterEnum(nextLetterIndex)) &&
+                LetterNumber.isEnumLegal(LetterNumber.getNumberEnum(ppNumberIndex))) {
+            final var squareIndex = (8 * (7 - ppNumberIndex)) + nextLetterIndex;
+            return Optional.of(board.get(squareIndex));
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<Square> findNnLetterPreviousNumberSquare(Letter letter, Number2 number) {
+
+        final var nnLetterIndex = letter.index + 2;
+        final var previousNumberIndex = number.index - 1;
+
+        if (LetterNumber.isEnumLegal(LetterNumber.getLetterEnum(nnLetterIndex)) &&
+                LetterNumber.isEnumLegal(LetterNumber.getNumberEnum(previousNumberIndex))) {
+            final var squareIndex = (8 * (7 - previousNumberIndex)) + nnLetterIndex;
             return Optional.of(board.get(squareIndex));
         }
 

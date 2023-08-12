@@ -6,6 +6,7 @@ import practice.igoroffline.hamsterchessbackend.board.PieceColor;
 import practice.igoroffline.hamsterchessbackend.board.Square;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class FindSquare {
@@ -16,6 +17,8 @@ public class FindSquare {
 
         final var pieceColor = pieceSquare.getPieceColor() == PieceColor.WHITE ? PieceColor.WHITE : PieceColor.BLACK;
         final var oppositePieceColor = pieceColor == PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
+
+        final var doWhilePieces = List.of(Piece.ROOK, Piece.BISHOP);
 
         Optional<Square> square = Optional.of(new Square(pieceSquare.getLetter(), pieceSquare.getNumber(), Piece.NONE, PieceColor.NONE));
         var contact = Contact.NONE;
@@ -37,7 +40,20 @@ public class FindSquare {
                     case NEXT_LETTER_PREVIOUS_NUMBER -> board.findNextLetterPreviousNumberSquare(square.get().getLetter(), square.get().getNumber());
                     default -> throw new IllegalArgumentException("Illegal BISHOP movement");
                 };
+            } else if (piece == Piece.KNIGHT) {
+                square = switch (pieceMovement) {
+                    case PP_LETTER_NEXT_NUMBER -> board.findPpLetterNextNumberSquare(square.get().getLetter(), square.get().getNumber());
+                    case NN_NUMBER_PREVIOUS_LETTER -> board.findNnNumberPreviousLetterSquare(square.get().getLetter(), square.get().getNumber());
+                    case NN_NUMBER_NEXT_LETTER -> board.findNnNumberNextLetterSquare(square.get().getLetter(), square.get().getNumber());
+                    case NN_LETTER_NEXT_NUMBER -> board.findNnLetterNextNumberSquare(square.get().getLetter(), square.get().getNumber());
+                    case PP_LETTER_PREVIOUS_NUMBER -> board.findPpLetterPreviousNumberSquare(square.get().getLetter(), square.get().getNumber());
+                    case PP_NUMBER_PREVIOUS_LETTER -> board.findPpNumberPreviousLetterSquare(square.get().getLetter(), square.get().getNumber());
+                    case PP_NUMBER_NEXT_LETTER -> board.findPpNumberNextLetterSquare(square.get().getLetter(), square.get().getNumber());
+                    case NN_LETTER_PREVIOUS_NUMBER -> board.findNnLetterPreviousNumberSquare(square.get().getLetter(), square.get().getNumber());
+                    default -> throw new IllegalArgumentException("Illegal KNIGHT movement");
+                };
             }
+
             if (square.isPresent()) {
                 if (square.get().getPiece() == Piece.NONE) {
                     moves.add(square.get());
@@ -52,7 +68,7 @@ public class FindSquare {
                     }
                 }
             }
-        } while (square.isPresent() && contact == Contact.NONE);
+        } while (square.isPresent() && contact == Contact.NONE && doWhilePieces.contains(piece));
 
         return new MovementContact(moves, contact);
     }
