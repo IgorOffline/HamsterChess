@@ -42,7 +42,8 @@ enum Piece {
   none("_"),
   king("K"),
   rook("R"),
-  bishop("B");
+  bishop("B"),
+  knight("N");
 
   const Piece(this.name);
 

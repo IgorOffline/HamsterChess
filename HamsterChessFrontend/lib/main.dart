@@ -143,6 +143,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         return WhiteRook(size: pieceSize);
       } else if (square.piece == Piece.bishop) {
         return WhiteBishop(size: pieceSize);
+      } else if (square.piece == Piece.knight) {
+        return WhiteKnight(size: pieceSize);
       }
     } else if (square.pieceColor == PieceColor.black) {
       if (square.piece == Piece.king) {
@@ -151,6 +153,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         return BlackRook(size: pieceSize);
       } else if (square.piece == Piece.bishop) {
         return BlackBishop(size: pieceSize);
+      } else if (square.piece == Piece.knight) {
+        return BlackKnight(size: pieceSize);
       }
     }
 
@@ -204,6 +208,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             _setPieceColor(square, boardBItem);
           } else if (boardBItem.piece == 'BISHOP') {
             square.piece = Piece.bishop;
+            _setPieceColor(square, boardBItem);
+          } else if (boardBItem.piece == 'KNIGHT') {
+            square.piece = Piece.knight;
             _setPieceColor(square, boardBItem);
           }
         }
