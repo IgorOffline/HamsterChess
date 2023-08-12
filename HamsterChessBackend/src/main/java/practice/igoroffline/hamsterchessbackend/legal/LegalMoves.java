@@ -7,6 +7,7 @@ import practice.igoroffline.hamsterchessbackend.board.Piece;
 import practice.igoroffline.hamsterchessbackend.board.PieceColor;
 import practice.igoroffline.hamsterchessbackend.board.Square;
 import practice.igoroffline.hamsterchessbackend.main.GameMaster;
+import practice.igoroffline.hamsterchessbackend.piece.Bishop;
 import practice.igoroffline.hamsterchessbackend.piece.King;
 import practice.igoroffline.hamsterchessbackend.piece.Rook;
 
@@ -55,6 +56,18 @@ public class LegalMoves {
                 final var oppositeRookMoves = Rook.rookMoves(boardSquare, gameMaster.getBoard());
                 kingLegalMoves.removeAll(oppositeRookMoves.squares());
                 if (oppositeRookMoves.opponentsKingInCheck()) {
+                    gameMaster.setWhiteKingInCheck(pieceColor == PieceColor.WHITE);
+                    gameMaster.setBlackKingInCheck(pieceColor == PieceColor.BLACK);
+                }
+            } else if (boardSquare.getPiece() == Piece.BISHOP && boardSquare.getPieceColor() == pieceColor) {
+                final var bishopMoves = Bishop.bishopMoves(boardSquare, gameMaster.getBoard());
+                phase1LegalMoves.put(boardSquare, bishopMoves.squares());
+                kingLegalMoves.removeIf(square ->
+                        square.getLetter() == boardSquare.getLetter() && square.getNumber() == boardSquare.getNumber());
+            } else if (boardSquare.getPiece() == Piece.BISHOP && boardSquare.getPieceColor() == oppositePieceColor) {
+                final var oppositeBishopMoves = Bishop.bishopMoves(boardSquare, gameMaster.getBoard());
+                kingLegalMoves.removeAll(oppositeBishopMoves.squares());
+                if (oppositeBishopMoves.opponentsKingInCheck()) {
                     gameMaster.setWhiteKingInCheck(pieceColor == PieceColor.WHITE);
                     gameMaster.setBlackKingInCheck(pieceColor == PieceColor.BLACK);
                 }

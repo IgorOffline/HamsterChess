@@ -27,6 +27,8 @@ public class RController {
     @PostMapping("/move")
     GameMaster move(@RequestBody Move move) {
         log.info("move= {}", move);
+        // && sq.getPiece() != Piece.NONE -> We don't want to do similar checks here, this is just to
+        // avoid awkward frontend bugs
         gameMaster.setFromSquare(gameMaster.getBoard().getBoard().stream().filter(
                 sq -> sq.getIndex() == move.from() && sq.getPiece() != Piece.NONE).findFirst());
         gameMaster.setToSquare(gameMaster.getBoard().getBoard().stream().filter(

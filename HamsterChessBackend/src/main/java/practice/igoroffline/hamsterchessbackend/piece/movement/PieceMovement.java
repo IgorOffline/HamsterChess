@@ -1,0 +1,6 @@
+package practice.igoroffline.hamsterchessbackend.piece.movement;
+
+public enum PieceMovement {
+    NEXT_NUMBER, PREVIOUS_NUMBER, NEXT_LETTER, PREVIOUS_LETTER,
+    PREVIOUS_LETTER_NEXT_NUMBER, NEXT_LETTER_NEXT_NUMBER, PREVIOUS_LETTER_PREVIOUS_NUMBER, NEXT_LETTER_PREVIOUS_NUMBER
+}
