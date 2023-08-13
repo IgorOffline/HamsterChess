@@ -23,10 +23,13 @@ public class Pawn {
         final var attack2 = FindSquare.findSquare(Piece.PAWN, PieceMovement.PAWN_ATTACK_NEXT_LETTER, pawnSquare, board);
 
         final var movements = List.of(movement1);
-        movements.forEach(movement -> movementSquares.addAll(movement.squares()));
+        movements.stream().filter(movement -> movement.contact() == Contact.NONE)
+                .forEach(movement -> movementSquares.addAll(movement.squares()));
 
         final var attacks = List.of(attack1, attack2);
         attacks.forEach(attack -> attackSquares.addAll(attack.squares()));
+        attacks.stream().filter(attack -> attack.contact() == Contact.OPPONENT_NON_KING)
+                .forEach(attack -> movementSquares.addAll(attack.squares()));
 
         final var opponentsKingInCheck = attacks.stream().anyMatch(movementContact ->
                 movementContact.contact() == Contact.OPPONENT_KING);
