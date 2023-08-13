@@ -10,6 +10,7 @@ import practice.igoroffline.hamsterchessbackend.main.GameMaster;
 import practice.igoroffline.hamsterchessbackend.piece.Bishop;
 import practice.igoroffline.hamsterchessbackend.piece.King;
 import practice.igoroffline.hamsterchessbackend.piece.Knight;
+import practice.igoroffline.hamsterchessbackend.piece.Pawn;
 import practice.igoroffline.hamsterchessbackend.piece.Rook;
 
 import java.util.ArrayList;
@@ -50,37 +51,49 @@ public class LegalMoves {
         gameMaster.getBoard().getBoard().forEach(boardSquare -> {
             if (boardSquare.getPiece() == Piece.ROOK && boardSquare.getPieceColor() == pieceColor) {
                 final var rookMoves = Rook.rookMoves(boardSquare, gameMaster.getBoard());
-                phase1LegalMoves.put(boardSquare, rookMoves.squares());
+                phase1LegalMoves.put(boardSquare, rookMoves.movementSquares());
                 kingLegalMoves.removeIf(square ->
                         square.getLetter() == boardSquare.getLetter() && square.getNumber() == boardSquare.getNumber());
             } else if (boardSquare.getPiece() == Piece.ROOK && boardSquare.getPieceColor() == oppositePieceColor) {
                 final var oppositeRookMoves = Rook.rookMoves(boardSquare, gameMaster.getBoard());
-                kingLegalMoves.removeAll(oppositeRookMoves.squares());
+                kingLegalMoves.removeAll(oppositeRookMoves.movementSquares());
                 if (oppositeRookMoves.opponentsKingInCheck()) {
                     gameMaster.setWhiteKingInCheck(pieceColor == PieceColor.WHITE);
                     gameMaster.setBlackKingInCheck(pieceColor == PieceColor.BLACK);
                 }
             } else if (boardSquare.getPiece() == Piece.BISHOP && boardSquare.getPieceColor() == pieceColor) {
                 final var bishopMoves = Bishop.bishopMoves(boardSquare, gameMaster.getBoard());
-                phase1LegalMoves.put(boardSquare, bishopMoves.squares());
+                phase1LegalMoves.put(boardSquare, bishopMoves.movementSquares());
                 kingLegalMoves.removeIf(square ->
                         square.getLetter() == boardSquare.getLetter() && square.getNumber() == boardSquare.getNumber());
             } else if (boardSquare.getPiece() == Piece.BISHOP && boardSquare.getPieceColor() == oppositePieceColor) {
                 final var oppositeBishopMoves = Bishop.bishopMoves(boardSquare, gameMaster.getBoard());
-                kingLegalMoves.removeAll(oppositeBishopMoves.squares());
+                kingLegalMoves.removeAll(oppositeBishopMoves.movementSquares());
                 if (oppositeBishopMoves.opponentsKingInCheck()) {
                     gameMaster.setWhiteKingInCheck(pieceColor == PieceColor.WHITE);
                     gameMaster.setBlackKingInCheck(pieceColor == PieceColor.BLACK);
                 }
             } else if (boardSquare.getPiece() == Piece.KNIGHT && boardSquare.getPieceColor() == pieceColor) {
                 final var knightMoves = Knight.knightMoves(boardSquare, gameMaster.getBoard());
-                phase1LegalMoves.put(boardSquare, knightMoves.squares());
+                phase1LegalMoves.put(boardSquare, knightMoves.movementSquares());
                 kingLegalMoves.removeIf(square ->
                         square.getLetter() == boardSquare.getLetter() && square.getNumber() == boardSquare.getNumber());
             } else if (boardSquare.getPiece() == Piece.KNIGHT && boardSquare.getPieceColor() == oppositePieceColor) {
                 final var oppositeKnightMoves = Knight.knightMoves(boardSquare, gameMaster.getBoard());
-                kingLegalMoves.removeAll(oppositeKnightMoves.squares());
+                kingLegalMoves.removeAll(oppositeKnightMoves.movementSquares());
                 if (oppositeKnightMoves.opponentsKingInCheck()) {
+                    gameMaster.setWhiteKingInCheck(pieceColor == PieceColor.WHITE);
+                    gameMaster.setBlackKingInCheck(pieceColor == PieceColor.BLACK);
+                }
+            } else if (boardSquare.getPiece() == Piece.PAWN && boardSquare.getPieceColor() == pieceColor) {
+                final var pawnMoves = Pawn.pawnMoves(boardSquare, gameMaster.getBoard());
+                phase1LegalMoves.put(boardSquare, pawnMoves.movementSquares());
+                kingLegalMoves.removeIf(square ->
+                        square.getLetter() == boardSquare.getLetter() && square.getNumber() == boardSquare.getNumber());
+            } else if (boardSquare.getPiece() == Piece.PAWN && boardSquare.getPieceColor() == oppositePieceColor) {
+                final var oppositePawnMoves = Pawn.pawnMoves(boardSquare, gameMaster.getBoard());
+                kingLegalMoves.removeAll(oppositePawnMoves.attackSquares());
+                if (oppositePawnMoves.opponentsKingInCheck()) {
                     gameMaster.setWhiteKingInCheck(pieceColor == PieceColor.WHITE);
                     gameMaster.setBlackKingInCheck(pieceColor == PieceColor.BLACK);
                 }

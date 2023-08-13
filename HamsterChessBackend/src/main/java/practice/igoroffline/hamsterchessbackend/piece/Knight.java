@@ -5,15 +5,16 @@ import practice.igoroffline.hamsterchessbackend.board.Piece;
 import practice.igoroffline.hamsterchessbackend.board.Square;
 import practice.igoroffline.hamsterchessbackend.piece.movement.Contact;
 import practice.igoroffline.hamsterchessbackend.piece.movement.FindSquare;
-import practice.igoroffline.hamsterchessbackend.piece.movement.MovementOpponentCheck;
+import practice.igoroffline.hamsterchessbackend.piece.movement.MovementAttackOpponentCheck;
 import practice.igoroffline.hamsterchessbackend.piece.movement.PieceMovement;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Knight {
 
-    public static MovementOpponentCheck knightMoves(Square knightSquare, Board board) {
+    public static MovementAttackOpponentCheck knightMoves(Square knightSquare, Board board) {
 
         final var list = new ArrayList<Square>();
 
@@ -32,6 +33,6 @@ public class Knight {
         final var opponentsKingInCheck = movements.stream().anyMatch(movementContact ->
                 movementContact.contact() == Contact.OPPONENT_KING);
 
-        return new MovementOpponentCheck(list, opponentsKingInCheck);
+        return new MovementAttackOpponentCheck(list, Collections.emptyList(), opponentsKingInCheck);
     }
 }
