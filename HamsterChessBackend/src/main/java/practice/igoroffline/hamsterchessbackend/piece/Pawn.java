@@ -1,7 +1,9 @@
 package practice.igoroffline.hamsterchessbackend.piece;
 
 import practice.igoroffline.hamsterchessbackend.board.Board;
+import practice.igoroffline.hamsterchessbackend.board.Number2;
 import practice.igoroffline.hamsterchessbackend.board.Piece;
+import practice.igoroffline.hamsterchessbackend.board.PieceColor;
 import practice.igoroffline.hamsterchessbackend.board.Square;
 import practice.igoroffline.hamsterchessbackend.piece.movement.Contact;
 import practice.igoroffline.hamsterchessbackend.piece.movement.FindSquare;
@@ -23,7 +25,11 @@ public class Pawn {
         final var movement1 = FindSquare.findSquare(Piece.PAWN, PieceMovement.PAWN_MOVE_ONE_SQUARE, pawnSquare, board);
         Optional<MovementContact> movement2 = Optional.empty();
 
-        if (movement1.contact() == Contact.NONE) {
+        final var white2 = pawnSquare.getPieceColor() == PieceColor.WHITE && pawnSquare.getNumber() == Number2.N2;
+        final var black7 = pawnSquare.getPieceColor() == PieceColor.BLACK && pawnSquare.getNumber() == Number2.N7;
+        final var white2OrBlack7 = white2 || black7;
+
+        if (white2OrBlack7 && movement1.contact() == Contact.NONE) {
             movement2 = Optional.of(FindSquare.findSquare(Piece.PAWN, PieceMovement.PAWN_MOVE_TWO_SQUARES, pawnSquare, board));
         }
 
