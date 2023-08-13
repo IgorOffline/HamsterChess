@@ -24,9 +24,9 @@ public class Bishop {
         final var movement4 = FindSquare.findSquare(Piece.BISHOP, PieceMovement.NEXT_LETTER_PREVIOUS_NUMBER, bishopSquare, board);
 
         final var movements = List.of(movement1, movement2, movement3, movement4);
-        movements.forEach(movement -> list.addAll(movement.movementContact().squares()));
+        movements.forEach(movement -> list.addAll(movement.squares()));
         final var opponentsKingInCheck = movements.stream().anyMatch(movementContact ->
-                movementContact.movementContact().contact() == Contact.OPPONENT_KING);
+                movementContact.contact() == Contact.OPPONENT_KING);
 
         return new MovementAttackOpponentCheck(list, Collections.emptyList(), opponentsKingInCheck);
     }

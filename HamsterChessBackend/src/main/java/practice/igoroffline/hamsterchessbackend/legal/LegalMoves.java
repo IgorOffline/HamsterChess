@@ -90,6 +90,13 @@ public class LegalMoves {
                 phase1LegalMoves.put(boardSquare, pawnMoves.movementSquares());
                 kingLegalMoves.removeIf(square ->
                         square.getLetter() == boardSquare.getLetter() && square.getNumber() == boardSquare.getNumber());
+            } else if (boardSquare.getPiece() == Piece.PAWN && boardSquare.getPieceColor() == oppositePieceColor) {
+                final var oppositePawnMoves = Pawn.pawnMoves(boardSquare, gameMaster.getBoard());
+                kingLegalMoves.removeAll(oppositePawnMoves.attackSquares());
+                if (oppositePawnMoves.opponentsKingInCheck()) {
+                    gameMaster.setWhiteKingInCheck(pieceColor == PieceColor.WHITE);
+                    gameMaster.setBlackKingInCheck(pieceColor == PieceColor.BLACK);
+                }
             }
         });
 

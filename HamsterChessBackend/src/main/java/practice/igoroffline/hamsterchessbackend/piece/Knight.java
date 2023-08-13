@@ -29,9 +29,9 @@ public class Knight {
 
         final var movements = List.of(movement1, movement2, movement3, movement4,
                 movement5, movement6, movement7, movement8);
-        movements.forEach(movement -> list.addAll(movement.movementContact().squares()));
+        movements.forEach(movement -> list.addAll(movement.squares()));
         final var opponentsKingInCheck = movements.stream().anyMatch(movementContact ->
-                movementContact.movementContact().contact() == Contact.OPPONENT_KING);
+                movementContact.contact() == Contact.OPPONENT_KING);
 
         return new MovementAttackOpponentCheck(list, Collections.emptyList(), opponentsKingInCheck);
     }

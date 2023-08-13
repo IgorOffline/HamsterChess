@@ -24,9 +24,9 @@ public class Rook {
         final var movement4 = FindSquare.findSquare(Piece.ROOK, PieceMovement.PREVIOUS_LETTER, rookSquare, board);
 
         final var movements = List.of(movement1, movement2, movement3, movement4);
-        movements.forEach(movement -> list.addAll(movement.movementContact().squares()));
+        movements.forEach(movement -> list.addAll(movement.squares()));
         final var opponentsKingInCheck = movements.stream().anyMatch(movementContact ->
-                movementContact.movementContact().contact() == Contact.OPPONENT_KING);
+                movementContact.contact() == Contact.OPPONENT_KING);
 
         return new MovementAttackOpponentCheck(list, Collections.emptyList(), opponentsKingInCheck);
     }
