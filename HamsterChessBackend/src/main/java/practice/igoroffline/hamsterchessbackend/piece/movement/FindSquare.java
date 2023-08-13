@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class FindSquare {
 
-    public static MovementContact findSquare(Piece piece, PieceMovement pieceMovement, Square pieceSquare, Board board) {
+    public static MovementAttackContact findSquare(Piece piece, PieceMovement pieceMovement, Square pieceSquare, Board board) {
 
         final var moves = new ArrayList<Square>();
 
@@ -52,6 +52,11 @@ public class FindSquare {
                     case NN_LETTER_PREVIOUS_NUMBER -> board.findNnLetterPreviousNumberSquare(square.get().getLetter(), square.get().getNumber());
                     default -> throw new IllegalArgumentException("Illegal KNIGHT movement");
                 };
+            } else if (piece == Piece.PAWN) {
+                square = switch (pieceMovement) {
+                    case PAWN -> board.findPawnSquare(pieceColor, square.get().getLetter(), square.get().getNumber());
+                    default -> throw new IllegalArgumentException("Illegal PAWN movement");
+                };
             }
 
             if (square.isPresent()) {
@@ -70,6 +75,6 @@ public class FindSquare {
             }
         } while (square.isPresent() && contact == Contact.NONE && doWhilePieces.contains(piece));
 
-        return new MovementContact(moves, contact);
+        return new MovementAttackContact(new MovementContact(moves, contact), Optional.empty());
     }
 }
