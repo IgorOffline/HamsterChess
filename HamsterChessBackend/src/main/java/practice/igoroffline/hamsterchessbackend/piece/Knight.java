@@ -9,8 +9,8 @@ import practice.igoroffline.hamsterchessbackend.piece.movement.MovementAttackOpp
 import practice.igoroffline.hamsterchessbackend.piece.movement.PieceMovement;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 public class Knight {
 
@@ -33,6 +33,6 @@ public class Knight {
         final var opponentsKingInCheck = movements.stream().anyMatch(movementContact ->
                 movementContact.movementContact().contact() == Contact.OPPONENT_KING);
 
-        return new MovementAttackOpponentCheck(list, Optional.empty(), opponentsKingInCheck);
+        return new MovementAttackOpponentCheck(list, Collections.emptyList(), opponentsKingInCheck);
     }
 }
