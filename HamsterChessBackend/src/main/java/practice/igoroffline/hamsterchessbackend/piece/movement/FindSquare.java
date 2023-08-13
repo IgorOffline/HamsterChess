@@ -4,6 +4,8 @@ import practice.igoroffline.hamsterchessbackend.board.Board;
 import practice.igoroffline.hamsterchessbackend.board.Piece;
 import practice.igoroffline.hamsterchessbackend.board.PieceColor;
 import practice.igoroffline.hamsterchessbackend.board.Square;
+import practice.igoroffline.hamsterchessbackend.piece.movement.pawn.PawnAttackMovementDirection;
+import practice.igoroffline.hamsterchessbackend.piece.movement.pawn.PawnMove;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,13 +70,15 @@ public class FindSquare {
                 };
             } else if (piece == Piece.PAWN) {
                 square = switch (pieceMovement) {
-                    case PAWN_MOVE ->
-                            board.findPawnMoveSquare(pieceColor, square.get().getLetter(), square.get().getNumber());
+                    case PAWN_MOVE_ONE_SQUARE ->
+                            board.findPawnMoveSquare(PawnMove.ONE_SQUARE, pieceColor, square.get().getLetter(), square.get().getNumber());
+                    case PAWN_MOVE_TWO_SQUARES ->
+                            board.findPawnMoveSquare(PawnMove.TWO_SQUARES, pieceColor, square.get().getLetter(), square.get().getNumber());
                     case PAWN_ATTACK_PREVIOUS_LETTER ->
-                            board.findPawnAttackPreviousOrNextLetterSquare(MovementDirection.PREVIOUS,
+                            board.findPawnAttackPreviousOrNextLetterSquare(PawnAttackMovementDirection.PREVIOUS,
                                     pieceColor, square.get().getLetter(), square.get().getNumber());
                     case PAWN_ATTACK_NEXT_LETTER ->
-                            board.findPawnAttackPreviousOrNextLetterSquare(MovementDirection.NEXT,
+                            board.findPawnAttackPreviousOrNextLetterSquare(PawnAttackMovementDirection.NEXT,
                                     pieceColor, square.get().getLetter(), square.get().getNumber());
                     default -> throw new IllegalArgumentException("Illegal PAWN movement");
                 };

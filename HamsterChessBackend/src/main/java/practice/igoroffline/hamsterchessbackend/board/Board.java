@@ -3,7 +3,8 @@ package practice.igoroffline.hamsterchessbackend.board;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import practice.igoroffline.hamsterchessbackend.piece.movement.MovementDirection;
+import practice.igoroffline.hamsterchessbackend.piece.movement.pawn.PawnAttackMovementDirection;
+import practice.igoroffline.hamsterchessbackend.piece.movement.pawn.PawnMove;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -286,13 +287,22 @@ public class Board {
         return Optional.empty();
     }
 
-    public Optional<Square> findPawnMoveSquare(PieceColor pieceColor, Letter letter, Number2 number) {
+    public Optional<Square> findPawnMoveSquare(PawnMove pawnMove, PieceColor pieceColor, Letter letter, Number2 number) {
 
-        final var numberIndex = switch(pieceColor) {
-            case WHITE -> number.index + 1;
-            case BLACK -> number.index - 1;
-            case NONE -> throw new IllegalArgumentException("PieceColor.NONE not supported!");
-        };
+        var numberIndex = -1;
+
+        switch (pawnMove) {
+            case ONE_SQUARE -> numberIndex = switch(pieceColor) {
+                case WHITE -> number.index + 1;
+                case BLACK -> number.index - 1;
+                case NONE -> throw new IllegalArgumentException("PieceColor.NONE not supported!");
+            };
+            case TWO_SQUARES -> numberIndex = switch(pieceColor) {
+                case WHITE -> number.index + 2;
+                case BLACK -> number.index - 2;
+                case NONE -> throw new IllegalArgumentException("PieceColor.NONE not supported! (2)");
+            };
+        }
 
         if (LetterNumber.isEnumLegal(LetterNumber.getLetterEnum(letter.index)) &&
                 LetterNumber.isEnumLegal(LetterNumber.getNumberEnum(numberIndex))) {
@@ -303,7 +313,7 @@ public class Board {
         return Optional.empty();
     }
 
-    public Optional<Square> findPawnAttackPreviousOrNextLetterSquare(MovementDirection movementDirection, PieceColor pieceColor, Letter letter, Number2 number) {
+    public Optional<Square> findPawnAttackPreviousOrNextLetterSquare(PawnAttackMovementDirection movementDirection, PieceColor pieceColor, Letter letter, Number2 number) {
 
         final var letterIndex = switch(movementDirection) {
             case PREVIOUS -> letter.index - 1;

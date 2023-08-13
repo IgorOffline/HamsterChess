@@ -6,10 +6,12 @@ import practice.igoroffline.hamsterchessbackend.board.Square;
 import practice.igoroffline.hamsterchessbackend.piece.movement.Contact;
 import practice.igoroffline.hamsterchessbackend.piece.movement.FindSquare;
 import practice.igoroffline.hamsterchessbackend.piece.movement.MovementAttackOpponentCheck;
+import practice.igoroffline.hamsterchessbackend.piece.movement.MovementContact;
 import practice.igoroffline.hamsterchessbackend.piece.movement.PieceMovement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Pawn {
 
@@ -18,11 +20,17 @@ public class Pawn {
         final var movementSquares = new ArrayList<Square>();
         final var attackSquares = new ArrayList<Square>();
 
-        final var movement1 = FindSquare.findSquare(Piece.PAWN, PieceMovement.PAWN_MOVE, pawnSquare, board);
+        final var movement1 = FindSquare.findSquare(Piece.PAWN, PieceMovement.PAWN_MOVE_ONE_SQUARE, pawnSquare, board);
+        Optional<MovementContact> movement2 = Optional.empty();
+
+        if (movement1.contact() == Contact.NONE) {
+            movement2 = Optional.of(FindSquare.findSquare(Piece.PAWN, PieceMovement.PAWN_MOVE_TWO_SQUARES, pawnSquare, board));
+        }
+
         final var attack1 = FindSquare.findSquare(Piece.PAWN, PieceMovement.PAWN_ATTACK_PREVIOUS_LETTER, pawnSquare, board);
         final var attack2 = FindSquare.findSquare(Piece.PAWN, PieceMovement.PAWN_ATTACK_NEXT_LETTER, pawnSquare, board);
 
-        final var movements = List.of(movement1);
+        final var movements = movement2.map(contact -> List.of(movement1, contact)).orElseGet(() -> List.of(movement1));
         movements.stream().filter(movement -> movement.contact() == Contact.NONE)
                 .forEach(movement -> movementSquares.addAll(movement.squares()));
 
