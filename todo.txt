@@ -1,0 +1,5 @@
+- en passant
+- promotion
+- castling
+- notation
+- basic ai

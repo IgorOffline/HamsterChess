@@ -119,6 +119,7 @@ class Reset {
   bool blackKingInCheck;
   bool whiteKingCheckmated;
   bool blackKingCheckmated;
+  bool enPassantPossible;
   Map<int, List<int>> legalMoves = {}; // indexLegalFrom + indicesLegalTo
 
   Reset(
@@ -128,6 +129,7 @@ class Reset {
       required this.blackKingInCheck,
       required this.whiteKingCheckmated,
       required this.blackKingCheckmated,
+      required this.enPassantPossible,
       required this.legalMoves});
 
   factory Reset.fromJson(Map<String, dynamic> json) {
@@ -147,6 +149,7 @@ class Reset {
         blackKingInCheck: json['blackKingInCheck'],
         whiteKingCheckmated: json['whiteKingCheckmated'],
         blackKingCheckmated: json['blackKingCheckmated'],
+        enPassantPossible: json['enPassantPossible'],
         legalMoves: resetLegalMoves);
   }
 

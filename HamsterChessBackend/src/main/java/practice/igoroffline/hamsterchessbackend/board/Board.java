@@ -3,7 +3,7 @@ package practice.igoroffline.hamsterchessbackend.board;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import practice.igoroffline.hamsterchessbackend.piece.movement.pawn.PawnAttackMovementDirection;
+import practice.igoroffline.hamsterchessbackend.piece.movement.pawn.PawnAttackDirection;
 import practice.igoroffline.hamsterchessbackend.piece.movement.pawn.PawnMove;
 
 import java.util.ArrayList;
@@ -313,7 +313,7 @@ public class Board {
         return Optional.empty();
     }
 
-    public Optional<Square> findPawnAttackPreviousOrNextLetterSquare(PawnAttackMovementDirection movementDirection, PieceColor pieceColor, Letter letter, Number2 number) {
+    public Optional<Square> findPawnAttackPreviousOrNextLetterSquare(PawnAttackDirection movementDirection, PieceColor pieceColor, Letter letter, Number2 number) {
 
         final var letterIndex = switch(movementDirection) {
             case PREVIOUS -> letter.index - 1;

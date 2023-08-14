@@ -38,6 +38,9 @@ public class GameMaster {
     @Setter
     private boolean blackKingCheckmated = false;
 
+    @Setter
+    private boolean enPassantPossible = false;
+
     public EnrichedLegalMoves getEnrichedLegalMoves() {
         return new EnrichedLegalMoves(legalMoves);
     }
@@ -75,15 +78,26 @@ public class GameMaster {
     }
 
     public void move() {
-        toSquare.orElseThrow().setPiece(fromSquare.orElseThrow().getPiece());
+
+        enPassantPossible = false;
+
+        // assert
+        fromSquare.orElseThrow();
+        toSquare.orElseThrow();
+
+        if (fromSquare.get().getPiece() == Piece.PAWN && (Math.abs(fromSquare.get().getNumber().index - toSquare.get().getNumber().index) == 2)) {
+            enPassantPossible = true;
+        }
+
+        toSquare.get().setPiece(fromSquare.get().getPiece());
         toSquare.get().setPieceColor(fromSquare.get().getPieceColor());
         fromSquare.get().setPiece(Piece.NONE);
         fromSquare.get().setPieceColor(PieceColor.NONE);
+
+        whiteToMove = !whiteToMove;
     }
 
     private void calculate() {
-        whiteToMove = !whiteToMove;
-
         legalMoves.calculate(this);
     }
 }

@@ -273,21 +273,28 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   }
 
   Widget _gameStateVisualizer() {
-    if (board.reset != null) {
+    var widgets = <Widget>[];
+
+    if (board.reset == null) {
+      widgets.add(BlackPawn());
+    } else {
+      if (board.reset!.enPassantPossible) {
+        widgets.add(WhitePawn());
+      }
       if (board.reset!.whiteKingCheckmated) {
-        return Row(children: [WhiteKing(), WhiteKing(), WhiteKing()]);
+        widgets.addAll([WhiteKing(), WhiteKing(), WhiteKing()]);
       } else if (board.reset!.blackKingCheckmated) {
-        return Row(children: [BlackKing(), BlackKing(), BlackKing()]);
+        widgets.addAll([BlackKing(), BlackKing(), BlackKing()]);
       } else if (board.reset!.whiteKingInCheck) {
-        return Row(children: [WhiteKing(), WhiteKing()]);
+        widgets.addAll([WhiteKing(), WhiteKing()]);
       } else if (board.reset!.blackKingInCheck) {
-        return Row(children: [BlackKing(), BlackKing()]);
+        widgets.addAll([BlackKing(), BlackKing()]);
       } else {
-        return board.reset!.whiteToMove ? WhiteKing() : BlackKing();
+        widgets.add(board.reset!.whiteToMove ? WhiteKing() : BlackKing());
       }
     }
 
-    return WhitePawn();
+    return Row(children: widgets);
   }
 
   void _plus() {

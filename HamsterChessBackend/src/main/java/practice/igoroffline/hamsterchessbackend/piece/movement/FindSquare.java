@@ -4,7 +4,7 @@ import practice.igoroffline.hamsterchessbackend.board.Board;
 import practice.igoroffline.hamsterchessbackend.board.Piece;
 import practice.igoroffline.hamsterchessbackend.board.PieceColor;
 import practice.igoroffline.hamsterchessbackend.board.Square;
-import practice.igoroffline.hamsterchessbackend.piece.movement.pawn.PawnAttackMovementDirection;
+import practice.igoroffline.hamsterchessbackend.piece.movement.pawn.PawnAttackDirection;
 import practice.igoroffline.hamsterchessbackend.piece.movement.pawn.PawnMove;
 
 import java.util.ArrayList;
@@ -75,10 +75,10 @@ public class FindSquare {
                     case PAWN_MOVE_TWO_SQUARES ->
                             board.findPawnMoveSquare(PawnMove.TWO_SQUARES, pieceColor, square.get().getLetter(), square.get().getNumber());
                     case PAWN_ATTACK_PREVIOUS_LETTER ->
-                            board.findPawnAttackPreviousOrNextLetterSquare(PawnAttackMovementDirection.PREVIOUS,
+                            board.findPawnAttackPreviousOrNextLetterSquare(PawnAttackDirection.PREVIOUS,
                                     pieceColor, square.get().getLetter(), square.get().getNumber());
                     case PAWN_ATTACK_NEXT_LETTER ->
-                            board.findPawnAttackPreviousOrNextLetterSquare(PawnAttackMovementDirection.NEXT,
+                            board.findPawnAttackPreviousOrNextLetterSquare(PawnAttackDirection.NEXT,
                                     pieceColor, square.get().getLetter(), square.get().getNumber());
                     default -> throw new IllegalArgumentException("Illegal PAWN movement");
                 };
